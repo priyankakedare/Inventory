@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_yms_stock_receive_form" model="ir.ui.view">
+        <field name="name">yms.stock.receive.form</field>
+        <field name="model">yms.stock.receive</field>
+        <field name="arch" type="xml">
+            <form string="YMS Inventory Receiving">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="origin"/>
+                            <field name="scheduled_date"/>
+                        </group>
+                    </group>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="pipe_id"/>
+                        </list>
+                    </field>
+                </sheet>
+                <footer>
+                    <button name="action_receive" type="object" string="Receive to Pending" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_yms_stock_receive" model="ir.actions.act_window">
+        <field name="name">YMS Receiving</field>
+        <field name="res_model">yms.stock.receive</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_yms_stock_receive_form"/>
+    </record>
+
+    <menuitem
+        id="menu_yms_stock_receive_root"
+        name="YMS Receiving"
+        sequence="58"
+        groups="stock.group_stock_user"/>
+    <menuitem
+        id="menu_yms_stock_receive"
+        name="Receive to Pending"
+        parent="menu_yms_stock_receive_root"
+        action="action_yms_stock_receive"
+        sequence="1"
+        groups="stock.group_stock_user"/>
+</odoo>

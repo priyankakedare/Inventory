@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+            WH (warehouse view location)
+            ├── Pending
+            └── Yard-01
+                └── Bin-B01
+                    └── Plate-P01
+                    └── Plate-P02
+            └── Yard-02
+                └── Bin-B02
+                    └── Plate-P03
+        -->
+        <record id="stock_location_yms_pending" model="stock.location">
+            <field name="name">Pending</field>
+            <field name="usage">internal</field>
+            <field name="yms_location_type">pending</field>
+            <field name="barcode">YMS-PENDING</field>
+            <field name="location_id" ref="stock.stock_location_stock"/>
+        </record>
+        <record id="stock_location_yms_yard_01" model="stock.location">
+            <field name="name">Yard-01</field>
+            <field name="usage">view</field>
+            <field name="yms_location_type">yard</field>
+            <field name="barcode">YMS-YARD-01</field>
+            <field name="location_id" ref="stock.stock_location_stock"/>
+        </record>
+        <record id="stock_location_yms_bin_b01" model="stock.location">
+            <field name="name">Bin-B01</field>
+            <field name="usage">view</field>
+            <field name="yms_location_type">bin</field>
+            <field name="barcode">YMS-BIN-B01</field>
+            <field name="location_id" ref="stock_location_yms_yard_01"/>
+        </record>
+        <record id="stock_location_yms_plate_p01" model="stock.location">
+            <field name="name">Plate-P01</field>
+            <field name="usage">internal</field>
+            <field name="yms_location_type">plate</field>
+            <field name="barcode">YMS-PLATE-P01</field>
+            <field name="location_id" ref="stock_location_yms_bin_b01"/>
+        </record>
+        <record id="stock_location_yms_plate_p02" model="stock.location">
+            <field name="name">Plate-P02</field>
+            <field name="usage">internal</field>
+            <field name="yms_location_type">plate</field>
+            <field name="barcode">YMS-PLATE-P02</field>
+            <field name="location_id" ref="stock_location_yms_bin_b01"/>
+        </record>
+        <record id="stock_location_yms_yard_02" model="stock.location">
+            <field name="name">Yard-02</field>
+            <field name="usage">view</field>
+            <field name="yms_location_type">yard</field>
+            <field name="barcode">YMS-YARD-02</field>
+            <field name="location_id" ref="stock.stock_location_stock"/>
+        </record>
+        <record id="stock_location_yms_bin_b02" model="stock.location">
+            <field name="name">Bin-B02</field>
+            <field name="usage">view</field>
+            <field name="yms_location_type">bin</field>
+            <field name="barcode">YMS-BIN-B02</field>
+            <field name="location_id" ref="stock_location_yms_yard_02"/>
+        </record>
+        <record id="stock_location_yms_plate_p03" model="stock.location">
+            <field name="name">Plate-P03</field>
+            <field name="usage">internal</field>
+            <field name="yms_location_type">plate</field>
+            <field name="barcode">YMS-PLATE-P03</field>
+            <field name="location_id" ref="stock_location_yms_bin_b02"/>
+        </record>
+    </data>
+    <data>
+        <function model="stock.location" name="_yms_attach_to_warehouse_view"/>
+    </data>
+</odoo>

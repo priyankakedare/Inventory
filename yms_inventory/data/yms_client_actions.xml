@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_yms_inventory_app" model="ir.actions.client">
+        <field name="name">Inventory</field>
+        <field name="tag">yms_inventory_app</field>
+    </record>
+</odoo>

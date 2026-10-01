@@ -1,0 +1,1847 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="yms_inventory.YmsAppLegacyUnused" owl="1">
+        <div class="o_yms">
+            <div class="o_yms__body">
+                <aside class="o_yms__side">
+                    <div class="o_yms__brand">
+                        <div class="o_yms__logo"><i class="fa fa-bolt"/></div>
+                        <div>
+                            <strong>YardOps YMS</strong>
+                            <small>Inventory Suite</small>
+                        </div>
+                    </div>
+                    <div class="o_yms__menulbl">MAIN MENU</div>
+                    <t t-foreach="nav" t-as="item" t-key="item.id">
+                        <button type="button" t-attf-class="o_yms__nav {{ state.screen === item.id ? 'is-active' : '' }}" t-on-click="() => this.go(item.id)">
+                            <i t-attf-class="fa {{ item.icon }}"/><span t-esc="item.label"/>
+                        </button>
+                    </t>
+                    <div class="o_yms__side-foot">
+                        <div class="o_yms__avatar">ED</div>
+                        <div>
+                            <b style="display:block">Plant 1 - Yard Ops</b>
+                            <small style="display:block;color:#6b7280">Admin Supervisor</small>
+                        </div>
+                    </div>
+                </aside>
+                <main class="o_yms__main">
+                    <div t-if="state.screen !== 'dashboard' and state.screen !== 'grn' and state.screen !== 'verification' and state.screen !== 'picking' and state.screen !== 'history' and state.screen !== 'reports'" class="o_yms__crumb" t-esc="breadcrumb"/>
+
+                    <t t-if="state.screen === 'dashboard'">
+                        <div class="o_yms__dash-head">
+                            <div>
+                                <h1 class="o_yms__title">Inventory Dashboard</h1>
+                                <p class="o_yms__sub">Yard Management System</p>
+                            </div>
+                            <div class="o_yms__today"><i class="fa fa-calendar"/> Today<br/><b t-esc="dash.date"/></div>
+                        </div>
+                        <div class="o_yms__kpis">
+                            <t t-foreach="dash.kpis" t-as="kpi" t-key="kpi.key">
+                                <div t-attf-class="o_yms__kpi is-{{ kpi.tone }}">
+                                    <div class="o_yms__kpi-ic"><i t-attf-class="fa {{ kpi.icon }}"/></div>
+                                    <div><div class="o_yms__kpi-label" t-esc="kpi.label"/><div class="o_yms__kpi-value" t-esc="kpi.value"/><div class="o_yms__kpi-unit" t-esc="kpi.unit"/></div>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="o_yms__grid-3">
+                            <section class="o_yms__card">
+                                <h3><span class="o_yms__hico h-purple"><i class="fa fa-pie-chart"/></span> Stock by Status</h3>
+                                <div class="o_yms__status-wrap">
+                                    <div class="o_yms__donut o_yms__donut--stock"><div class="o_yms__donut-h"><small>Total</small><b>3,250</b><span>Pipes</span></div></div>
+                                    <div class="o_yms__legend">
+                                        <t t-foreach="dash.status" t-as="s" t-key="s.label">
+                                            <div class="o_yms__leg"><span><i t-attf-style="background:{{ s.color }}"/> <t t-esc="s.label"/></span><span><t t-esc="s.value"/> (<t t-esc="s.pct"/>)</span></div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="o_yms__card">
+                                <h3><span class="o_yms__hico h-purple"><i class="fa fa-bar-chart"/></span> Stock by Yard <em>All Yards</em></h3>
+                                <div class="o_yms__bars">
+                                    <div class="o_yms__yaxis"><span>1,000</span><span>800</span><span>400</span><span>0</span></div>
+                                    <div class="o_yms__barcol"><b>850</b><div class="o_yms__col c-blue" style="height:85%"/><small>RM Yard</small></div>
+                                    <div class="o_yms__barcol"><b>620</b><div class="o_yms__col c-violet" style="height:62%"/><small>Production Yard</small></div>
+                                    <div class="o_yms__barcol"><b>480</b><div class="o_yms__col c-green" style="height:48%"/><small>Dispatch Yard</small></div>
+                                    <div class="o_yms__barcol"><b>320</b><div class="o_yms__col c-amber" style="height:32%"/><small>Others</small></div>
+                                </div>
+                            </section>
+                            <section class="o_yms__card">
+                                <h3>Bin Utilization <em>All Yards</em></h3>
+                                <div class="o_yms__status-wrap">
+                                    <div class="o_yms__donut o_yms__donut--bin"><div class="o_yms__donut-h"><b>68%</b><span>Bin Capacity<br/>Utilized</span></div></div>
+                                    <div class="o_yms__legend">
+                                        <div class="o_yms__leg"><span><i style="background:#22c55e"/> Occupied</span><b>82 / 120 (68%)</b></div>
+                                        <div class="o_yms__leg"><span><i style="background:#d1d5db"/> Available</span><b>38 / 120 (32%)</b></div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <div class="o_yms__grid-2">
+                            <section class="o_yms__card">
+                                <h3><span class="o_yms__hico h-green"><i class="fa fa-truck"/></span> Recent GRNs <button class="o_yms__link" t-on-click="() => this.go('grn')">View All</button></h3>
+                                <table>
+                                    <thead><tr><th>GRN No.</th><th>PO No.</th><th>Supplier</th><th>Received</th><th>Status</th><th>Date</th></tr></thead>
+                                    <tbody>
+                                        <t t-foreach="dash.grns" t-as="g" t-key="g.no">
+                                            <tr t-on-click="() => this.openGrn(g.po)">
+                                                <td class="link" t-esc="g.no"/><td t-esc="g.po"/><td t-esc="g.supplier"/><td t-esc="g.qty"/>
+                                                <td><span t-attf-class="o_yms__badge {{ badgeClass(g.status) }}" t-esc="g.status"/></td>
+                                                <td t-esc="g.date"/>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <section class="o_yms__card">
+                                <h3><span class="o_yms__hico h-purple"><i class="fa fa-exchange"/></span> Recent Pipe Movements <button class="o_yms__link" t-on-click="() => this.go('history')">View All</button></h3>
+                                <table>
+                                    <thead><tr><th>Pipe ID</th><th>From Location</th><th>To Location</th><th>Time</th></tr></thead>
+                                    <tbody>
+                                        <t t-foreach="dash.movements" t-as="m" t-key="m_index">
+                                            <tr>
+                                                <td class="link" t-esc="m.pipe"/>
+                                                <td t-esc="m.from"/>
+                                                <td><span class="o_yms__arrow">→</span> <t t-esc="m.to"/></td>
+                                                <td t-esc="m.time"/>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <section class="o_yms__card">
+                                <h3><span class="o_yms__hico h-red"><i class="fa fa-exclamation-triangle"/></span> Alerts &amp; Exceptions <button class="o_yms__link">View All</button></h3>
+                                <t t-foreach="dash.alerts" t-as="a" t-key="a.text">
+                                    <div t-attf-class="o_yms__alertline is-{{ a.tone }}">
+                                        <i t-att-class="alertIcon(a.tone)"/>
+                                        <span t-esc="a.text"/>
+                                        <small t-esc="a.time"/>
+                                    </div>
+                                </t>
+                            </section>
+                        </div>
+                        <section class="o_yms__card o_yms__qa-card">
+                            <h3><span class="o_yms__hico h-purple"><i class="fa fa-bolt"/></span> Quick Actions</h3>
+                            <div class="o_yms__qa-row">
+                                <button class="o_yms__qa q1" t-on-click="() => this.go('po_import')"><i class="fa fa-file-text-o"/><b>Import PO</b><span>Upload Excel data</span></button>
+                                <button class="o_yms__qa q2" t-on-click="() => this.openGrn()"><i class="fa fa-truck"/><b>Create GRN</b><span>Receive material</span></button>
+                                <button class="o_yms__qa q3" t-on-click="() => this.go('inventory')"><i class="fa fa-cubes"/><b>View Inventory</b><span>Check stock &amp; location</span></button>
+                                <button class="o_yms__qa q4" t-on-click="() => this.go('movement')"><i class="fa fa-exchange"/><b>Record Movement</b><span>Update pipe location</span></button>
+                                <button class="o_yms__qa q5" t-on-click="() => this.go('verification')"><i class="fa fa-clipboard"/><b>Stock Verification</b><span>Verify physical stock</span></button>
+                                <button class="o_yms__qa q6" t-on-click="() => this.go('picking')"><i class="fa fa-shopping-cart"/><b>Check Availability</b><span>Reserve &amp; pick</span></button>
+                                <button class="o_yms__qa q7" t-on-click="() => this.go('reports')"><i class="fa fa-bar-chart"/><b>View Reports</b><span>Generate reports</span></button>
+                            </div>
+                        </section>
+                    </t>
+
+                    <t t-if="state.screen === 'po_import'">
+                        <div class="o_yms__pagehead">
+                            <div>
+                                <h1 class="o_yms__title">PO Import</h1>
+                                <p class="o_yms__sub">Import Purchase Order data from Excel and manage PO details</p>
+                            </div>
+                            <div class="o_yms__pagehead-actions">
+                                <button class="o_yms__btn-ghost" t-on-click="() => this.downloadTemplate()"><i class="fa fa-download"/> Download Template</button>
+                                <button class="o_yms__btn" t-on-click="() => this.importExcel()"><i class="fa fa-upload"/> Import Excel</button>
+                            </div>
+                        </div>
+                        <div class="o_yms__kpis o_yms__kpis--4">
+                            <div class="o_yms__kpi is-purple"><div class="o_yms__kpi-ic"><i class="fa fa-list"/></div><div><div class="o_yms__kpi-label">Total POs</div><div class="o_yms__kpi-value" t-esc="poKpi.total"/></div></div>
+                            <div class="o_yms__kpi is-green"><div class="o_yms__kpi-ic"><i class="fa fa-check"/></div><div><div class="o_yms__kpi-label">Open POs</div><div class="o_yms__kpi-value" t-esc="poKpi.open"/></div></div>
+                            <div class="o_yms__kpi is-yellow"><div class="o_yms__kpi-ic"><i class="fa fa-clock-o"/></div><div><div class="o_yms__kpi-label">Partially Received</div><div class="o_yms__kpi-value" t-esc="poKpi.partial"/></div></div>
+                            <div class="o_yms__kpi is-red"><div class="o_yms__kpi-ic"><i class="fa fa-times"/></div><div><div class="o_yms__kpi-label">Closed POs</div><div class="o_yms__kpi-value" t-esc="poKpi.closed"/></div></div>
+                        </div>
+                        <div class="o_yms__tabs">
+                            <button t-attf-class="o_yms__tab {{ state.poTab === 'list' ? 'is-on' : '' }}" t-on-click="() => this.state.poTab = 'list'">PO List</button>
+                            <button t-attf-class="o_yms__tab {{ state.poTab === 'history' ? 'is-on' : '' }}" t-on-click="() => this.state.poTab = 'history'">Import History</button>
+                        </div>
+                        <t t-if="state.poTab === 'list'">
+                            <div class="o_yms__po-filters">
+                                <div class="o_yms__searchbox">
+                                    <i class="fa fa-search"/>
+                                    <input type="text" placeholder="Search PO, Supplier, Material..." t-model="state.poQuery"/>
+                                </div>
+                                <select class="is-status" style="width:150px;max-width:150px;flex:none" t-model="state.poStatus">
+                                    <option value="all">All Status</option>
+                                    <option>Open</option>
+                                    <option>Partially Received</option>
+                                    <option>Closed</option>
+                                </select>
+                                <select class="is-supplier" style="width:170px;max-width:170px;flex:none" t-model="state.poSupplier">
+                                    <t t-foreach="suppliers" t-as="s" t-key="s">
+                                        <option t-att-value="s" t-esc="s === 'all' ? 'All Suppliers' : s"/>
+                                    </t>
+                                </select>
+                                <div class="o_yms__dates">
+                                    <input type="date" class="is-date"/>
+                                    <span>To</span>
+                                    <input type="date" class="is-date"/>
+                                </div>
+                            </div>
+                            <section class="o_yms__card">
+                                <table>
+                                    <thead><tr><th>PO Number</th><th>Supplier</th><th>PO Date</th><th>Expected Delivery</th><th>Material</th><th>Ordered Qty</th><th>Received Qty</th><th>Pending Qty</th><th>Status</th><th>Actions</th></tr></thead>
+                                    <tbody>
+                                        <t t-foreach="pos" t-as="p" t-key="p.po">
+                                            <tr>
+                                                <td class="link" t-esc="p.po"/><td t-esc="p.supplier"/><td t-esc="p.date"/><td t-esc="p.eta"/><td t-esc="p.material"/>
+                                                <td t-esc="p.ordered"/><td t-esc="p.received"/><td class="is-pending" t-esc="p.pending"/>
+                                                <td><span t-attf-class="o_yms__badge {{ badgeClass(p.status) }}" t-esc="p.status"/></td>
+                                                <td><button class="o_yms__link" t-on-click="() => this.openGrn(p.po)">View</button></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                                <div class="o_yms__foot"><span>Showing 1–<t t-esc="pos.length"/> of <t t-esc="pos.length"/></span><span class="o_yms__pager">1</span></div>
+                            </section>
+                            <div class="o_yms__drop">
+                                <div>
+                                    <b>Import Purchase Orders from Excel</b>
+                                    <div>Upload your Excel file to import PO data into the system. Supported format: .xlsx, .xls (Max 10 MB)</div>
+                                </div>
+                                <button class="o_yms__btn" t-on-click="() => this.importExcel()">Browse File</button>
+                            </div>
+                        </t>
+                        <t t-if="state.poTab === 'history'">
+                            <section class="o_yms__card">
+                                <table>
+                                    <thead><tr><th>File</th><th>User</th><th>Time</th><th>Rows</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        <t t-foreach="history" t-as="h" t-key="h.file">
+                                            <tr><td t-esc="h.file"/><td t-esc="h.user"/><td t-esc="h.time"/><td t-esc="h.rows"/><td><span t-attf-class="o_yms__badge {{ badgeClass(h.status) }}" t-esc="h.status"/></td></tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                        </t>
+                    </t>
+
+                    <t t-if="state.screen === 'grn'">
+                        <div class="o_yms__crumb">Inventory  &gt;  GRN / Receiving  &gt;  Create GRN</div>
+                        <div class="o_yms__grn-head">
+                            <div class="o_yms__grn-head-l">
+                                <h1 class="o_yms__title">Create GRN</h1>
+                                <span t-if="state.grnStep === 2" class="o_yms__po-chip" t-esc="state.selectedPo"/>
+                                <div class="o_yms__status">
+                                    <span t-att-class="statusOn('Draft')">Draft</span>
+                                    <span t-att-class="statusOn('Ready to Confirm')">Ready to Confirm</span>
+                                    <span t-att-class="statusOn('Confirmed')">Confirmed</span>
+                                </div>
+                            </div>
+                            <div class="o_yms__grn-head-r">
+                                <button class="o_yms__btn-ghost">Cancel</button>
+                                <button class="o_yms__btn-ghost" t-on-click="() => this.saveDraft()">Save as Draft</button>
+                                <button class="o_yms__btn" t-att-disabled="state.recvBusy" t-on-click="() => this.confirmGrn()"><i class="fa fa-check"/> Confirm GRN</button>
+                                <button type="button" class="o_yms__icon-btn"><i class="fa fa-bell"/><span class="o_yms__dot"/></button>
+                            </div>
+                        </div>
+                        <div t-attf-class="o_yms__stepper {{ state.grnStep === 2 ? 'is-solid' : '' }}">
+                            <t t-foreach="steps" t-as="st" t-key="st.id">
+                                <button type="button" t-att-class="stepClass(st)" t-on-click="() => this.setStep(st.id)">
+                                    <span class="o_yms__step-num">
+                                        <i t-if="stepIsDone(st)" class="fa fa-check"/>
+                                        <t t-if="!stepIsDone(st)" t-esc="st.id"/>
+                                    </span>
+                                    <span t-esc="stepLabel(st)"/>
+                                </button>
+                            </t>
+                        </div>
+                        <t t-if="state.grnDraft === 'Confirmed'">
+                            <div class="o_yms__ready">Received to Pending. Stock is Provisional in WH/Pending.</div>
+                        </t>
+
+                        <t t-if="state.grnStep === 1">
+                            <div class="o_yms__kpis o_yms__kpis--4">
+                                <div class="o_yms__stat">
+                                    <div>
+                                        <div class="o_yms__kpi-label">EXPECTED PIPES</div>
+                                        <div class="o_yms__kpi-value" t-esc="recvQty"/>
+                                        <div class="o_yms__kpi-unit">Pipe IDs to receive</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-gray"><i class="fa fa-shopping-bag"/></span>
+                                </div>
+                                <div class="o_yms__stat">
+                                    <div>
+                                        <div class="o_yms__kpi-label">ACTUAL RECEIVED</div>
+                                        <div class="o_yms__kpi-value is-purple" t-esc="recvQty"/>
+                                        <div class="o_yms__kpi-unit">Lines entered</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-green"><i class="fa fa-check"/></span>
+                                </div>
+                                <div class="o_yms__stat is-warn">
+                                    <div>
+                                        <div class="o_yms__kpi-label is-orange">VARIANCE DETECTED</div>
+                                        <div class="o_yms__kpi-value is-orange">0 pipes</div>
+                                        <div class="o_yms__kpi-unit is-red">Shortage handling required</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-orange"><i class="fa fa-exclamation-triangle"/></span>
+                                </div>
+                                <div class="o_yms__stat">
+                                    <div>
+                                        <div class="o_yms__kpi-label">PENDING QUANTITY</div>
+                                        <div class="o_yms__kpi-value" t-esc="state.pendingRows.length"/>
+                                        <div class="o_yms__kpi-unit">In WH / Pending</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-gray"><i class="fa fa-clock-o"/></span>
+                                </div>
+                            </div>
+                            <div class="o_yms__recv-bar">
+                                <select t-model="state.recvProductId">
+                                    <option value="">Material / Product</option>
+                                    <t t-foreach="state.recvProducts" t-as="pr" t-key="pr.id">
+                                        <option t-att-value="pr.id" t-esc="pr.display_name"/>
+                                    </t>
+                                </select>
+                                <input type="datetime-local" t-model="state.recvDate"/>
+                                <button class="o_yms__chipbtn" type="button" t-on-click="() => this.addRecvPipe(true)"><i class="fa fa-qrcode"/> Scan Pipe Barcode / QR</button>
+                                <button class="o_yms__chipbtn is-ghost" type="button" t-on-click="() => this.addRecvPipe(false)">+ Manual Entry</button>
+                                <button class="o_yms__chipbtn is-ghost" type="button"><i class="fa fa-download"/> Import CSV / EDI</button>
+                                <div class="o_yms__searchbox o_yms__searchbox--right">
+                                    <i class="fa fa-search"/>
+                                    <input type="text" placeholder="Search Pipe ID or QR..." t-model="state.scan" t-on-keydown="(ev) => this.onRecvScanKey(ev)"/>
+                                </div>
+                            </div>
+                            <section class="o_yms__card o_yms__recv-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>PIPE ID</th><th>BARCODE / QR</th><th>PRODUCT / MATERIAL</th><th>SPECIFICATION</th>
+                                            <th>LENGTH</th><th>DIAMETER</th><th>GRADE</th><th>BATCH / HEAT</th>
+                                            <th>EXPECTED</th><th>RECEIVED</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="grnPipesReview" t-as="p" t-key="p_index">
+                                            <tr t-on-click="() => this.state.selectedPipeId = p.id">
+                                                <td class="link">
+                                                    <input t-if="!p.readonly" type="text" placeholder="PIPE-001" t-model="p.id"/>
+                                                    <t t-else="" t-esc="p.id"/>
+                                                </td>
+                                                <td t-esc="p.barcode"/>
+                                                <td t-esc="p.material"/>
+                                                <td t-esc="p.spec"/>
+                                                <td t-esc="p.length"/>
+                                                <td t-esc="p.diameter"/>
+                                                <td t-esc="p.grade"/>
+                                                <td t-esc="p.batch"/>
+                                                <td t-esc="p.expected"/>
+                                                <td t-att-class="varianceClass(p)" t-esc="p.received"/>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <div class="o_yms__disc">
+                                <div class="o_yms__disc-head">
+                                    <div>
+                                        <b><i class="fa fa-exclamation-triangle"/> Discrepancy Action: Received Quantity (95) ≠ Expected Quantity (100)</b>
+                                        <div class="o_yms__disc-sub">Please confirm the variance reason and initiate supplier debit authorization flag.</div>
+                                    </div>
+                                    <span class="o_yms__disc-pill">5 Pipes Variance Detected</span>
+                                </div>
+                                <div class="o_yms__disc-grid">
+                                    <label>Difference Type
+                                        <select t-model="state.shortageType">
+                                            <option>Shortage / Missing</option>
+                                            <option>Over-receipt</option>
+                                            <option>Damage</option>
+                                        </select>
+                                    </label>
+                                    <label>Shortage Quantity
+                                        <input type="number" t-model="state.shortageQty"/>
+                                    </label>
+                                    <label>Root Cause / Reason
+                                        <input t-model="state.shortageReason"/>
+                                    </label>
+                                    <label>Evidence / Proof File
+                                        <div class="o_yms__filechip"><i class="fa fa-paperclip"/> Delivery_Challan_Signed.pdf</div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="o_yms__recv-foot">
+                                <button class="o_yms__btn-ghost" t-on-click="() => this.go('po_import')">Back to PO</button>
+                                <button class="o_yms__btn" t-on-click="() => this.setStep(2)">Proceed to Receiving &amp; Verify →</button>
+                            </div>
+                        </t>
+
+                        <t t-if="state.grnStep === 2">
+                            <div class="o_yms__kpis o_yms__kpis--4">
+                                <div class="o_yms__stat">
+                                    <div>
+                                        <div class="o_yms__kpi-label">EXPECTED PIPES</div>
+                                        <div class="o_yms__kpi-value"><t t-esc="recvQty"/> <small>units</small></div>
+                                        <div class="o_yms__kpi-unit">Pipe IDs to receive</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-gray"><i class="fa fa-file-text-o"/></span>
+                                </div>
+                                <div class="o_yms__stat">
+                                    <div>
+                                        <div class="o_yms__kpi-label">ACTUAL RECEIVED</div>
+                                        <div class="o_yms__kpi-row">
+                                            <div class="o_yms__kpi-value is-green"><t t-esc="recvQty"/> <small>units</small></div>
+                                            <span class="o_yms__pct-pill">Entered</span>
+                                        </div>
+                                        <div class="o_yms__kpi-unit">Lines entered</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-green"><i class="fa fa-check"/></span>
+                                </div>
+                                <div class="o_yms__stat is-warn">
+                                    <div>
+                                        <div class="o_yms__kpi-label is-orange">VARIANCE DETECTED</div>
+                                        <div class="o_yms__kpi-value is-orange">0 pipes</div>
+                                        <div class="o_yms__kpi-unit is-red">Shortage handling required</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-orange"><i class="fa fa-exclamation-triangle"/></span>
+                                </div>
+                                <div class="o_yms__stat">
+                                    <div>
+                                        <div class="o_yms__kpi-label">PENDING QUANTITY</div>
+                                        <div class="o_yms__kpi-value"><t t-esc="state.pendingRows.length"/> <small>pipes</small></div>
+                                        <div class="o_yms__kpi-unit">In WH / Pending</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-gray"><i class="fa fa-truck"/></span>
+                                </div>
+                            </div>
+                            <div class="o_yms__recv-bar o_yms__recv-bar--card">
+                                <select t-model="state.recvProductId">
+                                    <option value="">Material / Product</option>
+                                    <t t-foreach="state.recvProducts" t-as="pr" t-key="pr.id">
+                                        <option t-att-value="pr.id" t-esc="pr.display_name"/>
+                                    </t>
+                                </select>
+                                <input type="datetime-local" t-model="state.recvDate"/>
+                                <button class="o_yms__chipbtn is-scan" type="button" t-on-click="() => this.addRecvPipe(true)"><i class="fa fa-barcode"/> Scan Pipe Barcode / QR</button>
+                                <button class="o_yms__chipbtn is-ghost" type="button" t-on-click="() => this.addRecvPipe(false)"><i class="fa fa-plus-circle"/> Manual Entry</button>
+                                <button class="o_yms__chipbtn is-ghost" type="button"><i class="fa fa-download"/> Import CSV / EDI</button>
+                                <div class="o_yms__searchbox o_yms__searchbox--right">
+                                    <i class="fa fa-search"/>
+                                    <input type="text" placeholder="Search Pipe ID or QR..." t-model="state.scan" t-on-keydown="(ev) => this.onRecvScanKey(ev)"/>
+                                </div>
+                                <button type="button" class="o_yms__icon-btn"><i class="fa fa-filter"/></button>
+                            </div>
+                            <section class="o_yms__card o_yms__recv-table">
+                                <div class="o_yms__table-cap">
+                                    <span class="o_yms__table-cap-l">
+                                        <b>Scanned &amp; Verified Pipes</b>
+                                        <span class="o_yms__cap-chip"><t t-esc="recvQty"/> Lines / <t t-esc="recvQty"/> Received</span>
+                                    </span>
+                                    <span class="o_yms__linked"><i class="fa fa-circle"/> <t t-esc="recvSourceLabel"/> Linked</span>
+                                </div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>PIPE<br/>ID</th>
+                                            <th>BARCODE<br/>/ QR</th>
+                                            <th>PRODUCT /<br/>MATERIAL</th>
+                                            <th>SPECIFICATION</th>
+                                            <th>LENGTH</th>
+                                            <th>DIAMETER</th>
+                                            <th>GRADE</th>
+                                            <th>BATCH /<br/>HEAT</th>
+                                            <th>EXPECTED</th>
+                                            <th>RECEIVED</th>
+                                            <th>VARIANCE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="grnPipesReview" t-as="p" t-key="p_index">
+                                            <tr t-on-click="() => this.state.selectedPipeId = p.id">
+                                                <td class="link">
+                                                    <input t-if="!p.readonly" type="text" placeholder="PIPE-001" t-model="p.id"/>
+                                                    <t t-else="" t-esc="p.id"/>
+                                                </td>
+                                                <td t-esc="p.barcode"/>
+                                                <td class="link" t-esc="p.material"/>
+                                                <td t-esc="p.spec"/>
+                                                <td t-esc="p.length"/>
+                                                <td t-esc="p.diameter"/>
+                                                <td t-esc="p.grade"/>
+                                                <td t-esc="p.batch"/>
+                                                <td t-esc="p.expected"/>
+                                                <td t-att-class="varianceClass(p)" t-esc="p.received"/>
+                                                <td t-att-class="varianceClass(p)" t-esc="p.variance"/>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <div class="o_yms__disc o_yms__disc--banner">
+                                <i class="fa fa-exclamation-triangle"/>
+                                <div>
+                                    <b>Discrepancy Action: Received Quantity (95) ≠ Expected Quantity (100) — 5 Pipes Variance Detected</b>
+                                    <div class="o_yms__disc-sub">Please confirm the variance reason and attach supporting evidence.</div>
+                                </div>
+                            </div>
+                            <section class="o_yms__card" style="margin-top:12px">
+                                <h3>Provisional Inventory</h3>
+                                <div class="o_yms__fieldgrid">
+                                    <div class="o_yms__row"><span>Received Quantity</span><b><t t-esc="recvQty"/> Pipes</b></div>
+                                    <div class="o_yms__row"><span>Inventory Status</span><span class="o_yms__badge is-warn">Provisional</span></div>
+                                    <div class="o_yms__row"><span>Location</span><b>WH / Pending</b></div>
+                                    <div class="o_yms__row"><span>Source / Reference</span><input t-model="state.recvOrigin" placeholder="Source / Reference"/></div>
+                                    <div class="o_yms__row"><span>Receiving Date</span><input type="datetime-local" t-model="state.recvDate"/></div>
+                                    <div class="o_yms__row"><span>Material / Product</span><b t-esc="recvProductName"/></div>
+                                </div>
+                                <button class="o_yms__btn" type="button" t-att-disabled="state.recvBusy" t-on-click="() => this.receiveToPending()">Receive to Pending</button>
+                                <div t-if="state.provisionalCreated" class="o_yms__ready" style="margin-top:10px">
+                                    Received to Pending. Stock is Provisional until Yard / Bin / Plate is assigned.
+                                </div>
+                            </section>
+                            <div class="o_yms__recv-foot">
+                                <button class="o_yms__btn-ghost" t-on-click="() => this.setStep(1)">← Back to PO &amp; Arrival</button>
+                                <button class="o_yms__btn" t-on-click="() => this.setStep(3)">Proceed to Quality Check →</button>
+                            </div>
+                        </t>
+
+                        <t t-if="state.grnStep === 3">
+                            <h3>Quality Control Inspection <small>WH / Pending</small></h3>
+                            <p class="o_yms__sub">Stage 3 of 5: Validate received pipes in WH/Pending. Inventory remains Provisional until Yard / Bin / Plate is assigned. Stock quantity is not changed by quality check.</p>
+                            <div class="o_yms__kpis" style="grid-template-columns:repeat(4,1fr)">
+                                <div class="o_yms__kpi is-purple"><div><div class="o_yms__kpi-label">TOTAL RECEIVED</div><div class="o_yms__kpi-value" t-esc="qcKpi.total"/><div class="o_yms__kpi-unit">Pipes in Pending</div></div></div>
+                                <div class="o_yms__kpi is-green"><div><div class="o_yms__kpi-label">PASSED</div><div class="o_yms__kpi-value" t-esc="qcKpi.passed"/><div class="o_yms__kpi-unit" t-esc="qcKpi.passedPct"/></div></div>
+                                <div class="o_yms__kpi is-yellow"><div><div class="o_yms__kpi-label">HOLD</div><div class="o_yms__kpi-value" t-esc="qcKpi.hold"/><div class="o_yms__kpi-unit" t-esc="qcKpi.holdPct"/></div></div>
+                                <div class="o_yms__kpi is-red"><div><div class="o_yms__kpi-label">FAILED</div><div class="o_yms__kpi-value" t-esc="qcKpi.failed"/><div class="o_yms__kpi-unit" t-esc="qcKpi.failedPct"/></div></div>
+                            </div>
+                            <div class="o_yms__toolbar">
+                                <button class="o_yms__btn" type="button" t-on-click="() => this.loadQcPipes()">Scan Pipe Barcode / QR</button>
+                                <button class="o_yms__btn-ghost" type="button" t-on-click="() => this.loadQcPipes()">+ Manual Inspection</button>
+                                <button class="o_yms__btn-ghost" type="button">Upload Quality Document</button>
+                                <input placeholder="Search Pipe ID, QR, Heat..." style="margin-left:auto" t-model="state.qcQuery"/>
+                                <select t-model="state.qcFilter">
+                                    <option value="all">Status: All</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="passed">Passed</option>
+                                    <option value="failed">Failed</option>
+                                    <option value="hold">Hold</option>
+                                </select>
+                            </div>
+                            <section class="o_yms__card">
+                                <h3>Inspection Line Items <small><t t-esc="qcPipes.length"/> Pipe Lots</small></h3>
+                                <table>
+                                    <thead><tr><th>PIPE ID</th><th>BARCODE QR</th><th>PRODUCT / MATERIAL</th><th>SPECIFICATION</th><th>BATCH / HEAT</th><th>REC QTY</th><th>INSP STATUS</th><th>RESULT</th><th>REASON</th><th>REMARKS</th><th>EVIDENCE</th></tr></thead>
+                                    <tbody>
+                                        <t t-foreach="qcPipes" t-as="p" t-key="p.lot_id">
+                                            <tr t-on-click="() => this.selectQcRow(p)">
+                                                <td style="color:#6d28d9" t-esc="p.pipe_id"/><td t-esc="p.barcode"/><td t-esc="p.product"/><td t-esc="p.spec"/><td>—</td><td t-esc="p.qty"/>
+                                                <td><span t-attf-class="o_yms__badge {{ badgeClass(p.status) }}" t-esc="p.status_label"/></td>
+                                                <td t-esc="p.result"/><td>—</td><td t-esc="p.remarks"/><td>—</td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <section class="o_yms__card" style="margin-top:10px;border-color:#c4b5fd">
+                                <h3>Quality Inspection Details — <t t-esc="selectedQc.pipe_id"/> (In-Focus)</h3>
+                                <div class="o_yms__form">
+                                    <label>INSPECTION STATUS
+                                        <select t-model="state.qcStatus">
+                                            <option value="pending">Pending</option>
+                                            <option value="passed">Passed</option>
+                                            <option value="failed">Failed</option>
+                                            <option value="hold">Hold</option>
+                                        </select>
+                                    </label>
+                                    <label>INSPECTION RESULT
+                                        <select t-model="state.qcStatus">
+                                            <option value="pending">Pending</option>
+                                            <option value="passed">Pass</option>
+                                            <option value="failed">Fail</option>
+                                            <option value="hold">Hold</option>
+                                        </select>
+                                    </label>
+                                    <label>DATE &amp; INSPECTOR<input t-att-value="qcInspectLine" readonly="readonly"/></label>
+                                    <label>ROOT CAUSE / REASON<input t-model="state.qcRemarks"/></label>
+                                </div>
+                                <p t-esc="qcRemarksHint"/>
+                                <button class="o_yms__btn" type="button" t-att-disabled="state.qcBusy" t-on-click="() => this.saveQcCheck()">Save Quality Check</button>
+                            </section>
+                            <div class="o_yms__foot">
+                                <button class="o_yms__btn-ghost" t-on-click="() => this.setStep(2)">Back</button>
+                                <button class="o_yms__btn" t-on-click="() => this.setStep(4)">Next: Put-away / Location</button>
+                            </div>
+                        </t>
+
+                        <t t-if="state.grnStep === 4">
+                            <div class="o_yms__kpis" style="grid-template-columns:repeat(4,1fr)">
+                                <div class="o_yms__kpi is-blue"><div><div class="o_yms__kpi-label">TOTAL RECEIVED</div><div class="o_yms__kpi-value"><t t-esc="paKpi.total"/></div><div class="o_yms__kpi-unit">Pipes</div></div></div>
+                                <div class="o_yms__kpi is-green"><div><div class="o_yms__kpi-label">QUALITY ACCEPTED</div><div class="o_yms__kpi-value"><t t-esc="paKpi.accepted"/></div><div class="o_yms__kpi-unit">Pipes</div></div></div>
+                                <div class="o_yms__kpi is-purple"><div><div class="o_yms__kpi-label">LOCATED</div><div class="o_yms__kpi-value"><t t-esc="paKpi.located"/></div><div class="o_yms__kpi-unit">From Yard Management</div></div></div>
+                                <div class="o_yms__kpi is-red"><div><div class="o_yms__kpi-label">PENDING LOCATION</div><div class="o_yms__kpi-value"><t t-esc="paKpi.pending"/></div><div class="o_yms__kpi-unit">Provisional</div></div></div>
+                            </div>
+                            <div class="o_yms__split">
+                                <section class="o_yms__card">
+                                    <h3>Pipe Location Assignment</h3>
+                                    <table>
+                                        <thead><tr><th></th><th>#</th><th>Pipe ID</th><th>Product / Material</th><th>Quantity</th><th>Quality Status</th><th>Previous Location</th><th>Yard</th><th>Bin</th><th>Plate</th><th>Location Source</th><th>Location Status</th></tr></thead>
+                                        <tbody>
+                                            <t t-foreach="putawayPipes" t-as="p" t-key="p.lot_id">
+                                                <tr t-on-click="() => this.selectPaRow(p)">
+                                                    <td><input type="checkbox" t-att-checked="p.lot_id === state.paLotId"/></td><td t-esc="p_index + 1"/><td style="color:#6d28d9" t-esc="p.id"/><td t-esc="p.material"/><td t-esc="p.qty"/>
+                                                    <td><span t-attf-class="o_yms__badge {{ badgeClass(p.quality) }}" t-esc="p.quality"/></td>
+                                                    <td t-esc="p.prevLoc"/>
+                                                    <td t-esc="p.yard"/><td t-esc="p.bin"/><td t-esc="p.plate"/>
+                                                    <td t-esc="p.locSource"/>
+                                                    <td><span t-attf-class="o_yms__badge {{ badgeClass(p.loc) }}" t-esc="p.loc"/></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </section>
+                                <section class="o_yms__card">
+                                    <h3>Yard Management Location</h3>
+                                    <div class="o_yms__row"><span>Pipe / Material ID</span><b t-esc="selectedGrnPipe.id"/></div>
+                                    <div class="o_yms__row"><span>Previous Location</span><b>Provisional / Pending</b></div>
+                                    <div class="o_yms__form">
+                                        <label>New Location: Yard<select t-model="state.ymYard" t-on-change="() => this.onPaYardChange()">
+                                            <option value="">Select Yard</option>
+                                            <t t-foreach="state.paYards" t-as="y" t-key="y.id">
+                                                <option t-att-value="y.id" t-esc="y.name"/>
+                                            </t>
+                                        </select></label>
+                                        <label>Bin<select t-model="state.ymBin" t-on-change="() => this.onPaBinChange()">
+                                            <option value="">Select Bin</option>
+                                            <t t-foreach="paBinsFiltered" t-as="b" t-key="b.id">
+                                                <option t-att-value="b.id" t-esc="b.name"/>
+                                            </t>
+                                        </select></label>
+                                        <label>Plate<select t-model="state.ymPlate">
+                                            <option value="">Select Plate</option>
+                                            <t t-foreach="paPlatesFiltered" t-as="pl" t-key="pl.id">
+                                                <option t-att-value="pl.id" t-esc="pl.name"/>
+                                            </t>
+                                        </select></label>
+                                    </div>
+                                    <div class="o_yms__row"><span>New Location</span><b><t t-esc="paYardLabel"/> / <t t-esc="paBinLabel"/> / <t t-esc="paPlateLabel"/></b></div>
+                                    <div class="o_yms__row"><span>Location Source</span><b>Yard Management</b></div>
+                                    <div class="o_yms__row"><span>Location Status</span><span t-attf-class="o_yms__badge {{ paStatusBadgeClass }}" t-esc="paStatusLabel"/></div>
+                                    <div class="o_yms__ready">Location is received from Yard Management. Inventory does not decide Yard / Bin / Plate.</div>
+                                    <button class="o_yms__btn" type="button" t-att-disabled="state.paBusy" t-on-click="() => this.applyYardLocation()">Apply Location from Yard Management</button>
+                                </section>
+                            </div>
+                            <div class="o_yms__foot">
+                                <button class="o_yms__btn-ghost" t-on-click="() => this.setStep(3)">← Back to Quality Check</button>
+                                <button class="o_yms__btn" t-on-click="() => this.setStep(5)">Proceed to Review &amp; Confirm →</button>
+                            </div>
+                        </t>
+
+                        <t t-if="state.grnStep === 5">
+                            <div class="o_yms__kpis o_yms__kpis--6">
+                                <div class="o_yms__stat">
+                                    <div>
+                                        <div class="o_yms__kpi-label">PO NUMBER</div>
+                                        <div class="o_yms__kpi-value o_yms__kpi-value--po" t-esc="reviewKpi.po"/>
+                                        <div class="o_yms__kpi-unit">ABC Steel Pvt Ltd</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-gray"><i class="fa fa-truck"/></span>
+                                </div>
+                                <div class="o_yms__stat">
+                                    <div>
+                                        <div class="o_yms__kpi-label">TOTAL ORDERED</div>
+                                        <div class="o_yms__kpi-value"><t t-esc="reviewKpi.ordered"/> <small>Pipes</small></div>
+                                        <div class="o_yms__kpi-unit">As per Purchase Order</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-gray"><i class="fa fa-file-text-o"/></span>
+                                </div>
+                                <div class="o_yms__stat">
+                                    <div>
+                                        <div class="o_yms__kpi-label">TOTAL RECEIVED</div>
+                                        <div class="o_yms__kpi-value"><t t-esc="reviewKpi.received"/> <small>Pipes</small></div>
+                                        <div class="o_yms__kpi-unit">95% of Ordered Qty</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-gray"><i class="fa fa-truck"/></span>
+                                </div>
+                                <div class="o_yms__stat">
+                                    <div>
+                                        <div class="o_yms__kpi-label">QUALITY ACCEPTED</div>
+                                        <div class="o_yms__kpi-value is-green"><t t-esc="reviewKpi.accepted"/> <small>Pipes</small></div>
+                                        <div class="o_yms__kpi-unit">Ready for Inventory</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-green"><i class="fa fa-check"/></span>
+                                </div>
+                                <div class="o_yms__stat is-loc">
+                                    <div>
+                                        <div class="o_yms__kpi-label">LOCATED</div>
+                                        <div class="o_yms__kpi-value"><t t-esc="reviewKpi.located"/> <small>Pipes</small></div>
+                                        <div class="o_yms__kpi-unit">Yard / Bin / Plate</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-orange"><i class="fa fa-map-marker"/></span>
+                                </div>
+                                <div class="o_yms__stat is-pend">
+                                    <div>
+                                        <div class="o_yms__kpi-label is-red">PENDING LOCATION</div>
+                                        <div class="o_yms__kpi-value is-red"><t t-esc="reviewKpi.pending"/> <small>Pipes</small></div>
+                                        <div class="o_yms__kpi-unit">Still Provisional</div>
+                                    </div>
+                                    <span class="o_yms__stat-ic is-red"><i class="fa fa-clock-o"/></span>
+                                </div>
+                            </div>
+                            <div class="o_yms__split-4">
+                                <section class="o_yms__card">
+                                    <h3><i class="fa fa-clipboard"/> Purchase Order Details</h3>
+                                    <div class="o_yms__row"><span>PO Number</span><b>PO-2026-001</b></div>
+                                    <div class="o_yms__row"><span>Supplier</span><b>ABC Steel Pvt Ltd</b></div>
+                                    <div class="o_yms__row"><span>PO Date</span><b>25-Sep-2026</b></div>
+                                    <div class="o_yms__row"><span>Expected Delivery</span><b>25-Sep-2026</b></div>
+                                    <div class="o_yms__row"><span>Plant</span><b>Plant 1</b></div>
+                                    <div class="o_yms__row"><span>PO Status</span><b>Open</b></div>
+                                </section>
+                                <section class="o_yms__card">
+                                    <h3><i class="fa fa-inbox"/> Receiving Summary</h3>
+                                    <div class="o_yms__row"><span>Expected Quantity</span><b>100 Pipes</b></div>
+                                    <div class="o_yms__row"><span>Received Quantity</span><b>95 Pipes</b></div>
+                                    <div class="o_yms__row"><span>Variance</span><b class="is-neg">-5 Pipes</b></div>
+                                    <div class="o_yms__row"><span>Shortage</span><b class="is-neg">5 Pipes</b></div>
+                                    <div class="o_yms__row"><span>Receiving Date</span><b>25-Sep-2026 10:30 AM</b></div>
+                                    <div class="o_yms__row"><span>Weighbridge Weight</span><b>18,500 KG</b></div>
+                                </section>
+                                <section class="o_yms__card">
+                                    <h3><i class="fa fa-cubes"/> Inventory Summary</h3>
+                                    <div class="o_yms__row"><span>Provisional Quantity</span><b>95 Pipes</b></div>
+                                    <div class="o_yms__row"><span>Located Quantity</span><b>80 Pipes</b></div>
+                                    <div class="o_yms__row"><span>Pending Location Quantity</span><b>15 Pipes</b></div>
+                                    <div class="o_yms__row"><span>Accepted (Quality)</span><b class="is-ok">92 Pipes</b></div>
+                                    <div class="o_yms__row"><span>Quality Hold</span><b class="is-hold">2 Pipes</b></div>
+                                    <div class="o_yms__row"><span>Rejected</span><b class="is-neg">1 Pipe</b></div>
+                                </section>
+                                <section class="o_yms__card">
+                                    <h3><i class="fa fa-map-marker"/> Location Summary</h3>
+                                    <div class="o_yms__row"><span>Yard</span><b>Yard-01</b></div>
+                                    <div class="o_yms__row"><span>Bin</span><b>B-04</b></div>
+                                    <div class="o_yms__row"><span>Plate</span><b>P-12</b></div>
+                                    <div class="o_yms__row"><span>Location Status</span><span class="o_yms__badge is-ok">Located</span></div>
+                                    <div class="o_yms__row"><span>Location Source</span><b>Yard Management</b></div>
+                                    <div class="o_yms__row"><span>Pending Location</span><b>15 Pipes</b></div>
+                                </section>
+                            </div>
+                            <section class="o_yms__card o_yms__recv-table o_yms__rev-pipes">
+                                <div class="o_yms__table-cap">
+                                    <span class="o_yms__table-cap-l"><i class="fa fa-th-list"/><b>Pipe Summary (4 Records)</b></span>
+                                    <div class="o_yms__searchbox o_yms__searchbox--right">
+                                        <i class="fa fa-search"/>
+                                        <input type="text" placeholder="Search Pipe ID, Material..."/>
+                                    </div>
+                                </div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>#</th><th>Pipe ID</th><th>Barcode / QR</th><th>Product / Material</th>
+                                            <th>Specification</th><th>Received Qty</th><th>Quality Status</th><th>Inventory Status</th>
+                                            <th>Yard</th><th>Bin</th><th>Plate</th><th>Location Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td><td class="link">P-001</td><td>QR-P001</td><td class="link">Pipe 24"</td><td>OD 610 × 12</td><td>20</td>
+                                            <td><span class="o_yms__badge is-ok"><i class="fa fa-check-circle"/> Accepted</span></td>
+                                            <td><span class="o_yms__badge is-ok">Located</span></td>
+                                            <td>Yard-01</td><td>B-04</td><td>P-12</td>
+                                            <td><span class="o_yms__badge is-ok"><i class="fa fa-check-circle"/> Located</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td><td class="link">P-002</td><td>QR-P002</td><td class="link">Pipe 24"</td><td>OD 610 × 12</td><td>19</td>
+                                            <td><span class="o_yms__badge is-ok"><i class="fa fa-check-circle"/> Accepted</span></td>
+                                            <td><span class="o_yms__badge is-ok">Located</span></td>
+                                            <td>Yard-01</td><td>B-04</td><td>P-12</td>
+                                            <td><span class="o_yms__badge is-ok"><i class="fa fa-check-circle"/> Located</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td><td class="link">P-003</td><td>QR-P003</td><td class="link">Casing 9-5/8"</td><td>L-80 API Casing</td><td>30</td>
+                                            <td><span class="o_yms__badge is-ok"><i class="fa fa-check-circle"/> Accepted</span></td>
+                                            <td><span class="o_yms__badge is-warn">Provisional</span></td>
+                                            <td>Pending</td><td>Pending</td><td>Pending</td>
+                                            <td><span class="o_yms__badge is-warn">Pending</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td><td class="link">P-004</td><td>QR-P004</td><td class="link">Drill Pipe 5"</td><td>S-135 Premium</td><td>26</td>
+                                            <td><span class="o_yms__badge is-bad"><i class="fa fa-times-circle"/> Rejected</span></td>
+                                            <td><span class="o_yms__badge is-bad">Blocked</span></td>
+                                            <td>—</td><td>—</td><td>—</td>
+                                            <td><span class="o_yms__badge is-bad"><i class="fa fa-times-circle"/> Blocked</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <div class="o_yms__rev-bottom">
+                                <section class="o_yms__card">
+                                    <h3>
+                                        <span><i class="fa fa-paperclip"/> Attachments &amp; Documents</span>
+                                        <button class="o_yms__link" type="button">+ Upload Document</button>
+                                    </h3>
+                                    <table>
+                                        <thead><tr><th>#</th><th>File Name</th><th>Type</th><th>Uploaded By</th><th>Upload Date</th><th>Action</th></tr></thead>
+                                        <tbody>
+                                            <tr><td>1</td><td>Delivery_Challan_Signed.pdf</td><td>Delivery Challan</td><td>Priyanka K</td><td>25-Sep-2026</td><td><button class="o_yms__link" type="button">View</button></td></tr>
+                                            <tr><td>2</td><td>Quality_Certificate.pdf</td><td>Quality Certificate</td><td>Priyanka K</td><td>25-Sep-2026</td><td><button class="o_yms__link" type="button">View</button></td></tr>
+                                            <tr><td>3</td><td>Receiving_Photo.jpg</td><td>Receiving Photo</td><td>Priyanka K</td><td>25-Sep-2026</td><td><button class="o_yms__link" type="button">View</button></td></tr>
+                                        </tbody>
+                                    </table>
+                                </section>
+                                <section class="o_yms__card">
+                                    <h3><i class="fa fa-check-square-o"/> Validation Checklist</h3>
+                                    <div class="o_yms__checks">
+                                        <div><i class="fa fa-check-circle"/> PO selected</div>
+                                        <div><i class="fa fa-check-circle"/> No rejected pipe assigned</div>
+                                        <div><i class="fa fa-check-circle"/> Receiving completed</div>
+                                        <div><i class="fa fa-check-circle"/> Required documents added</div>
+                                        <div><i class="fa fa-check-circle"/> Quantity variance reviewed</div>
+                                        <div><i class="fa fa-check-circle"/> All mandatory information filled</div>
+                                        <div><i class="fa fa-check-circle"/> Quality check completed</div>
+                                        <div class="is-warn"><i class="fa fa-exclamation-triangle"/> 15 accepted pipes are still pending Yard Management location.</div>
+                                        <div><i class="fa fa-check-circle"/> Accepted pipes prepared</div>
+                                        <div><i class="fa fa-check-circle"/> Location received from Yard Management</div>
+                                    </div>
+                                </section>
+                                <section class="o_yms__card o_yms__confirm-card">
+                                    <h3><i class="fa fa-check-circle"/> Confirm GRN</h3>
+                                    <div class="o_yms__confirm-title">On confirmation, the system will:</div>
+                                    <div class="o_yms__confirm-list">
+                                        <div><i class="fa fa-check-circle"/> Update PO received quantity</div>
+                                        <div><i class="fa fa-check-circle"/> Register pipe IDs in provisional inventory</div>
+                                        <div><i class="fa fa-check-circle"/> Save quality status</div>
+                                        <div><i class="fa fa-check-circle"/> Apply Yard / Bin / Plate from Yard Management</div>
+                                        <div><i class="fa fa-check-circle"/> Create inventory movement history</div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="o_yms__recv-foot">
+                                <button class="o_yms__btn-ghost" t-on-click="() => this.setStep(4)">← Back to Put-away / Location</button>
+                                <button class="o_yms__btn" t-on-click="() => this.confirmGrn()">Confirm GRN →</button>
+                            </div>
+                        </t>
+                    </t>
+
+                    <t t-if="state.screen === 'inventory'">
+                        <h1 class="o_yms__title">Inventory &amp; Location</h1>
+                        <div class="o_yms__kpis o_yms__kpis--5">
+                            <div class="o_yms__stat">
+                                <div>
+                                    <div class="o_yms__kpi-label">TOTAL PIPES</div>
+                                    <div class="o_yms__kpi-value"><t t-esc="invKpi.total"/> <small>Pipes</small></div>
+                                </div>
+                                <span class="o_yms__stat-ic is-purple"><i class="fa fa-cubes"/></span>
+                            </div>
+                            <div class="o_yms__stat is-rsv">
+                                <div>
+                                    <div class="o_yms__kpi-label">PROVISIONAL</div>
+                                    <div class="o_yms__kpi-value"><t t-esc="invKpi.provisional"/> <small>Pending location</small></div>
+                                </div>
+                                <span class="o_yms__stat-ic is-amber"><i class="fa fa-clock-o"/></span>
+                            </div>
+                            <div class="o_yms__stat is-avail">
+                                <div>
+                                    <div class="o_yms__kpi-label">LOCATED</div>
+                                    <div class="o_yms__kpi-value is-green"><t t-esc="invKpi.located"/> <small>Yard / Bin / Plate</small></div>
+                                </div>
+                                <span class="o_yms__stat-ic is-green"><i class="fa fa-map-marker"/></span>
+                            </div>
+                            <div class="o_yms__stat">
+                                <div>
+                                    <div class="o_yms__kpi-label">AVAILABLE</div>
+                                    <div class="o_yms__kpi-value"><t t-esc="invKpi.available"/> <small>Pipes</small></div>
+                                </div>
+                                <span class="o_yms__stat-ic is-green"><i class="fa fa-check"/></span>
+                            </div>
+                            <div class="o_yms__stat is-hold">
+                                <div>
+                                    <div class="o_yms__kpi-label">RESERVED / PICKED</div>
+                                    <div class="o_yms__kpi-value"><t t-esc="invKpi.reservedPicked"/> <small>Pipes</small></div>
+                                </div>
+                                <span class="o_yms__stat-ic is-pink"><i class="fa fa-cube"/></span>
+                            </div>
+                        </div>
+                        <div class="o_yms__filters">
+                            <label>Inventory Status
+                                <select t-model="state.invStatus" t-on-change="() => this.searchInventory()">
+                                    <option value="all">All</option>
+                                    <option>Provisional</option>
+                                    <option>Located</option>
+                                    <option>Available</option>
+                                    <option>Reserved</option>
+                                    <option>Picked</option>
+                                </select>
+                            </label>
+                            <label>Yard<select t-model="state.invYard" t-on-change="() => this.searchInventory()">
+                                <option value="all">All Yards</option>
+                                <t t-foreach="state.invYards" t-as="y" t-key="y">
+                                    <option t-att-value="y" t-esc="y"/>
+                                </t>
+                            </select></label>
+                            <label>Bin<select t-model="state.invBin" t-on-change="() => this.searchInventory()">
+                                <option value="all">All Bins</option>
+                                <t t-foreach="state.invBinList" t-as="b" t-key="b">
+                                    <option t-att-value="b" t-esc="b"/>
+                                </t>
+                            </select></label>
+                            <label>Plate<select t-model="state.invPlate" t-on-change="() => this.searchInventory()">
+                                <option value="all">All Plates</option>
+                                <t t-foreach="state.invPlateList" t-as="pl" t-key="pl">
+                                    <option t-att-value="pl" t-esc="pl"/>
+                                </t>
+                            </select></label>
+                            <label>Product / Material<select t-model="state.invProductId" t-on-change="() => this.searchInventory()">
+                                <option value="all">All Materials</option>
+                                <t t-foreach="state.invProducts" t-as="pr" t-key="pr.id">
+                                    <option t-att-value="pr.id" t-esc="pr.name"/>
+                                </t>
+                            </select></label>
+                            <div class="o_yms__searchbox o_yms__searchbox--grow">
+                                <i class="fa fa-search"/>
+                                <input placeholder="Search Pipe ID, Material..." t-model="state.invQuery"/>
+                            </div>
+                            <button class="o_yms__btn-ghost" type="button" t-on-click="() => this.resetInvFilters()">Reset</button>
+                            <button class="o_yms__btn" type="button" t-on-click="() => this.searchInventory()"><i class="fa fa-search"/> Search</button>
+                        </div>
+                        <div class="o_yms__split o_yms__split--inv">
+                            <section class="o_yms__card o_yms__recv-table">
+                                <div class="o_yms__table-cap">
+                                    <span class="o_yms__table-cap-l"><i class="fa fa-th-list"/><b>Pipe Inventory (<t t-esc="invPipes.length"/> Records)</b></span>
+                                    <span>
+                                        <button class="o_yms__chipbtn is-ghost" type="button"><i class="fa fa-download"/> Export</button>
+                                        <button class="o_yms__btn" type="button" t-on-click="() => this.go('movement')">+ Add Movement</button>
+                                    </span>
+                                </div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th></th><th>#</th><th>Pipe ID</th><th>Material</th><th>Specification</th>
+                                            <th colspan="3">Current Location</th><th>Quantity</th><th>Quality Status</th><th>Status</th><th>Last Movement</th><th>Action</th>
+                                        </tr>
+                                        <tr class="o_yms__subhead">
+                                            <th></th><th></th><th></th><th></th><th></th>
+                                            <th>Yard</th><th>Bin</th><th>Plate</th><th></th><th></th><th></th><th></th><th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="invPipes" t-as="p" t-key="p.quant_id">
+                                            <tr t-attf-class="{{ state.selectedInvQuantId === p.quant_id ? 'is-sel' : '' }}" t-on-click="() => this.selectInvRow(p)">
+                                                <td><input type="checkbox" t-att-checked="state.selectedInvQuantId === p.quant_id"/></td>
+                                                <td t-esc="p_index + 1"/>
+                                                <td class="link" t-esc="p.id"/>
+                                                <td t-esc="p.material"/>
+                                                <td t-esc="p.spec"/>
+                                                <td t-esc="p.yard"/><td t-esc="p.bin"/><td t-esc="p.plate"/>
+                                                <td t-esc="p.qty"/>
+                                                <td><span t-attf-class="o_yms__badge {{ badgeClass(p.quality) }}"><i t-attf-class="fa {{ p.quality === 'Rejected' ? 'fa-times-circle' : 'fa-check-circle' }}"/> <t t-esc="p.quality"/></span></td>
+                                                <td><span t-attf-class="o_yms__badge {{ badgeClass(p.status) }}" t-esc="p.status"/></td>
+                                                <td t-esc="p.last"/>
+                                                <td><button class="o_yms__link" type="button" t-on-click="() => this.selectInvRow(p)">View</button></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <section class="o_yms__card">
+                                <h3>Pipe Details <button class="o_yms__link" type="button"><i class="fa fa-pencil"/> Edit</button></h3>
+                                <div class="o_yms__detail-top">
+                                    <div class="o_yms__detail-rows">
+                                        <div class="o_yms__row"><span>Pipe ID</span><b t-esc="selectedInv.id"/></div>
+                                        <div class="o_yms__row"><span>Barcode / QR</span><b t-esc="selectedInv.barcode"/></div>
+                                        <div class="o_yms__row"><span>Product / Material</span><b t-esc="selectedInv.material"/></div>
+                                        <div class="o_yms__row"><span>Specification</span><b t-esc="selectedInv.spec"/></div>
+                                        <div class="o_yms__row"><span>Batch / Heat</span><b t-esc="selectedInv.batch"/></div>
+                                        <div class="o_yms__row"><span>Quantity</span><b t-esc="selectedInv.qty"/></div>
+                                    </div>
+                                    <div class="o_yms__photo"><i class="fa fa-picture-o"/></div>
+                                </div>
+                                <h3>Current Location</h3>
+                                <div class="o_yms__row"><span>Yard</span><b t-esc="selectedInv.yard"/></div>
+                                <div class="o_yms__row"><span>Bin</span><b t-esc="selectedInv.bin"/></div>
+                                <div class="o_yms__row"><span>Plate</span><b t-esc="selectedInv.plate"/></div>
+                                <div class="o_yms__row"><span>Location Source</span><b t-esc="selectedInv.locSource"/></div>
+                                <div class="o_yms__row"><span>Location Status</span><span t-attf-class="o_yms__badge {{ badgeClass(selectedInv.status === 'Provisional' ? 'Pending' : selectedInv.status) }}" t-esc="selectedInv.status === 'Provisional' ? 'Pending' : selectedInv.status"/></div>
+                                <div class="o_yms__row"><span>Quality Status</span><span t-attf-class="o_yms__badge {{ badgeClass(selectedInv.quality) }}" t-esc="selectedInv.quality"/></div>
+                                <h3>Last Movement</h3>
+                                <div class="o_yms__row"><span>From</span><b t-esc="selectedInv.lastFrom"/></div>
+                                <div class="o_yms__row"><span>To</span><b t-esc="invLastTo"/></div>
+                                <div class="o_yms__row"><span>Movement Type</span><b t-esc="selectedInv.lastType"/></div>
+                                <div class="o_yms__row"><span>Date &amp; Time</span><b t-esc="selectedInv.last"/></div>
+                                <div class="o_yms__row"><span>User</span><b t-esc="selectedInv.lastUser"/></div>
+                            </section>
+                        </div>
+                        <div class="o_yms__grid-3" style="margin-top:12px">
+                            <section class="o_yms__card">
+                                <h3><i class="fa fa-bar-chart"/> Yard-wise Inventory</h3>
+                                <table>
+                                    <thead><tr><th>Yard</th><th>Total Pipes</th><th>Available</th><th>Reserved</th><th>On Hold</th><th>Rejected</th></tr></thead>
+                                    <tbody>
+                                        <t t-foreach="invYardRows.rows" t-as="y" t-key="y.yard">
+                                            <tr>
+                                                <td t-esc="y.yard"/>
+                                                <td t-esc="y.total"/>
+                                                <td class="is-ok" t-esc="y.available"/>
+                                                <td t-esc="y.reserved"/>
+                                                <td class="is-hold" t-esc="y.hold"/>
+                                                <td t-attf-class="{{ y.rejected ? 'is-neg' : '' }}" t-esc="y.rejected"/>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <td><b>Total</b></td>
+                                            <td><b t-esc="invYardRows.tot.total"/></td>
+                                            <td class="is-ok"><b t-esc="invYardRows.tot.available"/></td>
+                                            <td><b t-esc="invYardRows.tot.reserved"/></td>
+                                            <td class="is-hold"><b t-esc="invYardRows.tot.hold"/></td>
+                                            <td class="is-neg"><b t-esc="invYardRows.tot.rejected"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </section>
+                            <section class="o_yms__card">
+                                <h3>
+                                    <span><i class="fa fa-th"/> Location Utilization</span>
+                                    <span class="o_yms__mini-tabs"><b>Bins</b> Plates Yards</span>
+                                </h3>
+                                <div class="o_yms__util-head"><span>Bin</span><span>Capacity</span><span>Used</span><span>Available</span><span>Utilization</span></div>
+                                <t t-foreach="invBinUsage" t-as="u" t-key="u.name">
+                                    <div class="o_yms__util-row">
+                                        <span t-esc="u.name"/>
+                                        <span>—</span>
+                                        <span t-esc="u.used"/>
+                                        <span t-esc="u.available"/>
+                                        <span class="o_yms__util-bar"><i t-attf-style="width:{{ u.bar }}"/></span>
+                                        <small t-esc="u.bar"/>
+                                    </div>
+                                </t>
+                            </section>
+                            <section class="o_yms__card">
+                                <h3>Quality Status Distribution</h3>
+                                <div class="o_yms__qdist">
+                                    <div class="o_yms__donut o_yms__donut--q">
+                                        <div class="o_yms__donut-h"><b t-esc="invQualityDist.total"/><span>Total Pipes</span></div>
+                                    </div>
+                                    <div class="o_yms__legend">
+                                        <div class="o_yms__row"><span><i style="background:#22c55e"/> Available</span><b><t t-esc="invQualityDist.available"/> (<t t-esc="invQualityDist.availablePct"/>)</b></div>
+                                        <div class="o_yms__row"><span><i style="background:#eab308"/> Reserved</span><b><t t-esc="invQualityDist.reserved"/> (<t t-esc="invQualityDist.reservedPct"/>)</b></div>
+                                        <div class="o_yms__row"><span><i style="background:#f97316"/> Quality Hold</span><b><t t-esc="invQualityDist.hold"/> (<t t-esc="invQualityDist.holdPct"/>)</b></div>
+                                        <div class="o_yms__row"><span><i style="background:#ef4444"/> Rejected</span><b><t t-esc="invQualityDist.rejected"/> (<t t-esc="invQualityDist.rejectedPct"/>)</b></div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </t>
+
+                    <t t-if="state.screen === 'movement'">
+                        <div class="o_yms__pagehead">
+                            <div>
+                                <h1 class="o_yms__title">Pipe Movement</h1>
+                            </div>
+                            <button class="o_yms__btn" type="button" t-on-click="() => this.clearMoveForm()">+ New Movement</button>
+                        </div>
+                        <div class="o_yms__kpis o_yms__kpis--5">
+                            <div class="o_yms__stat">
+                                <div><div class="o_yms__kpi-label">TOTAL MOVEMENTS</div><div class="o_yms__kpi-value"><t t-esc="moveKpi.total"/> <small>Listed</small></div></div>
+                                <span class="o_yms__stat-ic is-purple"><i class="fa fa-exchange"/></span>
+                            </div>
+                            <div class="o_yms__stat is-avail">
+                                <div><div class="o_yms__kpi-label">YARD TRANSFER</div><div class="o_yms__kpi-value"><t t-esc="moveKpi.yard"/> <small>Movements</small></div></div>
+                                <span class="o_yms__stat-ic is-green"><i class="fa fa-map-marker"/></span>
+                            </div>
+                            <div class="o_yms__stat is-rsv">
+                                <div><div class="o_yms__kpi-label">BIN/PLATE TRANSFER</div><div class="o_yms__kpi-value"><t t-esc="moveKpi.bin"/> <small>Movements</small></div></div>
+                                <span class="o_yms__stat-ic is-amber"><i class="fa fa-cube"/></span>
+                            </div>
+                            <div class="o_yms__stat is-hold">
+                                <div><div class="o_yms__kpi-label">OUT TO PRODUCTION</div><div class="o_yms__kpi-value"><t t-esc="moveKpi.prod"/> <small>Movements</small></div></div>
+                                <span class="o_yms__stat-ic is-pink"><i class="fa fa-truck"/></span>
+                            </div>
+                            <div class="o_yms__stat">
+                                <div><div class="o_yms__kpi-label">OUT TO DISPATCH</div><div class="o_yms__kpi-value"><t t-esc="moveKpi.dispatch"/> <small>Movements</small></div></div>
+                                <span class="o_yms__stat-ic is-blue"><i class="fa fa-arrow-right"/></span>
+                            </div>
+                        </div>
+                        <div class="o_yms__filters">
+                            <label>Movement Type<select t-model="state.moveType"><option value="all">All Types</option><option>Put-away</option><option>Yard Transfer</option><option>Bin Transfer</option><option>To Production</option><option>To Dispatch</option></select></label>
+                            <label>From Yard<select t-model="state.moveFromYard">
+                                <option value="all">All</option>
+                                <t t-foreach="moveFromYardOptions" t-as="fy" t-key="fy">
+                                    <option t-att-value="fy" t-esc="fy"/>
+                                </t>
+                            </select></label>
+                            <label>From Bin<select><option>All</option></select></label>
+                            <label>To Yard<select><option>All</option></select></label>
+                            <label>Status<select t-model="state.moveStatus"><option value="all">All</option><option>Completed</option><option>In Progress</option><option>Pending</option></select></label>
+                            <label>From Date<input type="text" placeholder="Select Date"/></label>
+                            <label>To Date<input type="text" placeholder="Select Date"/></label>
+                            <button class="o_yms__btn-ghost" type="button" t-on-click="() => this.resetMoveFilters()">Reset</button>
+                            <button class="o_yms__btn" type="button" t-on-click="() => this.loadMovement()"><i class="fa fa-search"/> Search</button>
+                        </div>
+                        <div class="o_yms__split o_yms__split--inv">
+                            <div>
+                                <section class="o_yms__card o_yms__recv-table">
+                                    <div class="o_yms__table-cap">
+                                        <span class="o_yms__table-cap-l"><i class="fa fa-th-list"/><b>Movement List (<t t-esc="movements.length"/> Records)</b></span>
+                                        <button class="o_yms__chipbtn is-ghost" type="button"><i class="fa fa-download"/> Export</button>
+                                    </div>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th></th><th>#</th><th>Movement No.</th><th>Date &amp; Time</th><th>Pipe ID</th><th>Material</th>
+                                                <th>From Location</th><th></th><th>To Location</th><th>Type</th><th>Qty</th><th>Status</th><th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="movements" t-as="m" t-key="m.id">
+                                                <tr t-on-click="() => this.selectMoveRow(m)">
+                                                    <td><input type="checkbox" t-att-checked="state.selectedMoveId === m.id"/></td>
+                                                    <td t-esc="m_index + 1"/>
+                                                    <td class="link" t-esc="m.no"/>
+                                                    <td t-esc="m.dt"/>
+                                                    <td t-esc="m.pipe"/>
+                                                    <td t-esc="m.material"/>
+                                                    <td class="o_yms__loc2"><b t-esc="m.fromTop"/><small t-esc="m.fromSub"/></td>
+                                                    <td class="o_yms__arrow">→</td>
+                                                    <td class="o_yms__loc2"><b t-esc="m.toTop"/><small t-esc="m.toSub"/></td>
+                                                    <td t-esc="m.type"/>
+                                                    <td t-esc="m.qty"/>
+                                                    <td><span t-attf-class="o_yms__badge {{ badgeClass(m.status) }}" t-esc="m.status"/></td>
+                                                    <td><button class="o_yms__link" type="button" t-on-click="() => this.selectMoveRow(m)">View</button></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </section>
+                            </div>
+                            <div>
+                                <section class="o_yms__card">
+                                    <h3>Create New Movement</h3>
+                                    <div class="o_yms__stack">
+                                        <label>Movement Type *<select t-model="state.moveForm.type"><option>Yard Transfer</option><option>Put-away</option><option>Bin Transfer</option><option>To Production</option><option>To Dispatch</option></select></label>
+                                        <label>Pipe ID *<select t-model="state.moveForm.lotId" t-on-change="() => this.onMovePipeChange()">
+                                            <option value="">Search Pipe ID...</option>
+                                            <t t-foreach="state.movePipes" t-as="mp" t-key="mp.lot_id">
+                                                <option t-att-value="mp.lot_id" t-esc="mp.id"/>
+                                            </t>
+                                        </select></label>
+                                        <label>Quantity *<input type="number" t-model="state.moveForm.qty"/></label>
+                                        <div class="o_yms__loc3">
+                                            <label>From Location *<select t-model="state.moveForm.fromYard">
+                                                <option t-att-value="selectedMovePipe.yard" t-esc="selectedMovePipe.yard"/>
+                                            </select></label>
+                                            <label>&#160;<select t-model="state.moveForm.fromBin">
+                                                <option t-att-value="selectedMovePipe.bin" t-esc="selectedMovePipe.bin"/>
+                                            </select></label>
+                                            <label>&#160;<select t-model="state.moveForm.fromPlate">
+                                                <option t-att-value="selectedMovePipe.plate" t-esc="selectedMovePipe.plate"/>
+                                            </select></label>
+                                        </div>
+                                        <div class="o_yms__loc3">
+                                            <label>To Location *<select t-model="state.moveForm.toYard" t-on-change="() => this.onMoveToYardChange()">
+                                                <option value="">Yard</option>
+                                                <t t-foreach="state.moveYards" t-as="ty" t-key="ty.id">
+                                                    <option t-att-value="ty.id" t-esc="ty.name"/>
+                                                </t>
+                                            </select></label>
+                                            <label>&#160;<select t-model="state.moveForm.toBin" t-on-change="() => this.onMoveToBinChange()">
+                                                <option value="">Bin</option>
+                                                <t t-foreach="moveToBins" t-as="tb" t-key="tb.id">
+                                                    <option t-att-value="tb.id" t-esc="tb.name"/>
+                                                </t>
+                                            </select></label>
+                                            <label>&#160;<select t-model="state.moveForm.toPlate">
+                                                <option value="">Plate</option>
+                                                <t t-foreach="moveToPlates" t-as="tp" t-key="tp.id">
+                                                    <option t-att-value="tp.id" t-esc="tp.name"/>
+                                                </t>
+                                            </select></label>
+                                        </div>
+                                        <label>Remarks<input t-model="state.moveForm.reason" placeholder="Enter remarks..."/></label>
+                                        <div class="o_yms__recv-foot">
+                                            <button class="o_yms__btn-ghost" type="button" t-on-click="() => this.clearMoveForm()">Clear</button>
+                                            <button class="o_yms__btn" type="button" t-att-disabled="state.moveBusy" t-on-click="() => this.createMovement()"><i class="fa fa-paper-plane"/> Create Movement</button>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section class="o_yms__card" style="margin-top:10px">
+                                    <h3>Pipe Details</h3>
+                                    <div class="o_yms__row"><span>Pipe ID</span><b t-esc="selectedMovePipe.id"/></div>
+                                    <div class="o_yms__row"><span>Barcode / QR</span><b t-esc="selectedMovePipe.barcode"/></div>
+                                    <div class="o_yms__row"><span>Material</span><b t-esc="selectedMovePipe.material"/></div>
+                                    <div class="o_yms__row"><span>Specification</span><b t-esc="selectedMovePipe.spec"/></div>
+                                    <div class="o_yms__row"><span>Batch / Heat</span><b t-esc="selectedMovePipe.batch"/></div>
+                                    <div class="o_yms__row"><span>Current Location</span><b t-esc="moveCurrentLocation"/></div>
+                                    <div class="o_yms__row"><span>Quantity</span><b t-esc="selectedMovePipe.qty"/></div>
+                                    <div class="o_yms__row"><span>Quality Status</span><span t-attf-class="o_yms__badge {{ badgeClass(selectedMovePipe.quality) }}" t-esc="selectedMovePipe.quality"/></div>
+                                </section>
+                            </div>
+                        </div>
+                    </t>
+
+                    <t t-if="state.screen === 'verification'">
+                        <div class="sv">
+                            <link rel="stylesheet" href="/yms_inventory/static/src/scss/yms_sv_look.css?v=rev19"/>
+                            <div class="sv-head">
+                                <div>
+                                    <div class="sv-crumb">Inventory  &gt;  Stock Verification</div>
+                                    <h1>Stock Verification</h1>
+                                    <p>Verify physical stock with system records and update discrepancies.</p>
+                                </div>
+                                <div class="sv-head-btns">
+                                    <button type="button" class="sv-btn-p" t-on-click="() => this.loadVerification()"><i class="fa fa-play"/> Start Verification</button>
+                                    <button type="button" class="sv-btn-w"><i class="fa fa-download"/> Import Scan File</button>
+                                    <button type="button" class="sv-btn-w"><i class="fa fa-download"/> Export Report</button>
+                                </div>
+                            </div>
+                            <div class="sv-tabs">
+                                <button type="button" t-attf-class="{{ state.verifyTab === 'verification' ? 'on' : '' }}" t-on-click="() => this.state.verifyTab = 'verification'">Verification</button>
+                                <button type="button" t-attf-class="{{ state.verifyTab === 'discrepancies' ? 'on' : '' }}" t-on-click="() => this.state.verifyTab = 'discrepancies'">Discrepancies</button>
+                                <button type="button" t-attf-class="{{ state.verifyTab === 'history' ? 'on' : '' }}" t-on-click="() => this.state.verifyTab = 'history'">History</button>
+                            </div>
+                            <t t-if="state.verifyTab === 'discrepancies'">
+                                <div class="sv-card">
+                                    <t t-if="!state.verifyDisc.length">
+                                        <p>No discrepancies. Physical count matches system stock for the selected location.</p>
+                                    </t>
+                                    <t t-if="state.verifyDisc.length">
+                                        <table class="sv-table">
+                                            <thead><tr><th>Session</th><th>Pipe ID</th><th>Location</th><th>System Qty</th><th>Physical Qty</th><th>Variance</th><th>Status</th><th>Remarks</th></tr></thead>
+                                            <tbody>
+                                                <t t-foreach="state.verifyDisc" t-as="d" t-key="d.session">
+                                                    <tr>
+                                                        <td t-esc="d.session"/>
+                                                        <td t-esc="d.pipe"/>
+                                                        <td t-esc="d.location"/>
+                                                        <td t-esc="d.system_qty"/>
+                                                        <td t-esc="d.physical_qty"/>
+                                                        <td t-esc="d.variance"/>
+                                                        <td><em t-esc="d.status"/></td>
+                                                        <td t-esc="d.remarks"/>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                </div>
+                            </t>
+                            <t t-if="state.verifyTab === 'history'">
+                                <div class="sv-card">
+                                    <table class="sv-table">
+                                        <thead><tr><th>Session</th><th>Date</th><th>Location</th><th>Verified</th><th>Discrepancies</th><th>User</th><th>Status</th></tr></thead>
+                                        <tbody>
+                                            <t t-foreach="state.verifyHistory" t-as="h" t-key="h.session">
+                                                <tr>
+                                                    <td t-esc="h.session"/>
+                                                    <td t-esc="h.date"/>
+                                                    <td t-esc="h.location"/>
+                                                    <td t-esc="h.verified"/>
+                                                    <td t-esc="h.discrepancies"/>
+                                                    <td t-esc="h.user"/>
+                                                    <td><em class="ok" t-esc="h.status"/></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                            <t t-if="state.verifyTab === 'verification'">
+                                <div class="sv-filter">
+                                    <div class="sv-f-scope">
+                                        <div class="lbl">Verification Scope</div>
+                                        <label class="on"><input type="radio" checked="checked"/> By Location</label>
+                                        <label><input type="radio"/> By Material</label>
+                                        <label><input type="radio"/> By Production Order</label>
+                                    </div>
+                                    <div class="sv-f-dd">
+                                        <label>Yard<select t-model="state.verifyYard" t-on-change="() => this.loadVerification()">
+                                            <option value="all">All Yards</option>
+                                            <t t-foreach="state.verifyYards" t-as="vy" t-key="vy">
+                                                <option t-att-value="vy" t-esc="vy"/>
+                                            </t>
+                                        </select></label>
+                                        <label>Bin<select t-model="state.verifyBin" t-on-change="() => this.loadVerification()">
+                                            <option value="all">All Bins</option>
+                                            <t t-foreach="state.verifyBinList" t-as="vb" t-key="vb">
+                                                <option t-att-value="vb" t-esc="vb"/>
+                                            </t>
+                                        </select></label>
+                                        <label>Plate<select t-model="state.verifyPlate" t-on-change="() => this.loadVerification()">
+                                            <option value="all">All Plates</option>
+                                            <t t-foreach="state.verifyPlateList" t-as="vp" t-key="vp">
+                                                <option t-att-value="vp" t-esc="vp"/>
+                                            </t>
+                                        </select></label>
+                                        <label>Material<select t-model="state.verifyProductId" t-on-change="() => this.loadVerification()">
+                                            <option value="all">All Materials</option>
+                                            <t t-foreach="state.verifyProducts" t-as="vm" t-key="vm.id">
+                                                <option t-att-value="vm.id" t-esc="vm.name"/>
+                                            </t>
+                                        </select></label>
+                                    </div>
+                                    <div class="sv-f-st">
+                                        <div class="lbl">Verification Status</div>
+                                        <label t-att-class="state.verifyVStatus === 'pending' ? 'on' : ''"><input type="radio" t-on-click="() => this.state.verifyVStatus = 'pending'"/> Pending</label>
+                                        <label t-att-class="state.verifyVStatus === 'progress' ? 'on' : ''"><input type="radio" t-on-click="() => this.state.verifyVStatus = 'progress'"/> In Progress</label>
+                                        <label t-att-class="state.verifyVStatus === 'completed' ? 'on' : ''"><input type="radio" t-on-click="() => this.state.verifyVStatus = 'completed'"/> Completed</label>
+                                    </div>
+                                    <div class="sv-f-go">
+                                        <button type="button" class="sv-btn-p" t-on-click="() => this.loadVerification()"><i class="fa fa-search"/> Load Stock</button>
+                                        <button type="button" class="sv-ico"><i class="fa fa-search"/></button>
+                                        <button type="button" class="sv-btn-w" t-on-click="() => this.clearVerifyFilters()">Clear</button>
+                                    </div>
+                                </div>
+                                <div class="sv-main">
+                                    <section class="sv-card sv-loc">
+                                        <h3>Locations</h3>
+                                        <div class="sv-search"><i class="fa fa-search"/><input placeholder="Search location..." t-model="state.verifyLocQuery"/></div>
+                                        <div class="sv-tree">
+                                            <div t-att-class="verifyAllLocClass" t-on-click="() => this.selectVerifyLocation({id: 0})">
+                                                <span><i class="fa fa-folder-open"/> All YMS Locations</span>
+                                                <b t-esc="verifyTreeTotal"/>
+                                            </div>
+                                            <t t-foreach="verifyTreeFiltered" t-as="n" t-key="n.id">
+                                                <div t-att-class="verifyNodeClass(n)" t-on-click="() => this.selectVerifyLocation(n)">
+                                                    <span t-esc="n.label"/>
+                                                    <b t-esc="n.qty"/>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </section>
+                                    <section class="sv-card sv-stock">
+                                        <div class="sv-stock-h">
+                                            <h3><i class="fa fa-th-list"/> Expected Stock — <t t-esc="verifyLocLabel"/></h3>
+                                            <span class="chip"><t t-esc="verifyPipes.length"/> Pipes</span>
+                                        </div>
+                                        <table class="sv-table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th><th>#</th><th>Pipe ID</th><th>Barcode / QR</th><th>Material</th><th>Spec</th><th>Expected Qty</th><th>System Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="verifyPipes" t-as="p" t-key="p.lot_id">
+                                                    <tr t-attf-class="{{ state.verifyLotId === p.lot_id ? 'on' : '' }}" t-on-click="() => this.selectVerifyRow(p)">
+                                                        <td><input type="checkbox" t-att-checked="p.checked"/></td>
+                                                        <td t-esc="p_index + 1"/>
+                                                        <td class="pid" t-esc="p.id"/>
+                                                        <td t-esc="p.barcode"/>
+                                                        <td t-esc="p.material"/>
+                                                        <td t-esc="p.spec"/>
+                                                        <td t-esc="p.qty"/>
+                        <td><em t-esc="p.verify_label"/></td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                        <div class="sv-foot">
+                                            <span>Show <select><option>10</option></select> entries</span>
+                                            <span>Showing 1 - <t t-esc="verifyPipes.length"/> of <t t-esc="verifyPipes.length"/></span>
+                                            <span class="pg"><i>&lt;</i><b>1</b><i>2</i><i>&gt;</i></span>
+                                        </div>
+                                    </section>
+                                    <section class="sv-card sv-entry">
+                                        <h3>Verification Entry</h3>
+                                        <div class="sv-etabs"><b>Scan</b><span>Manual Entry</span></div>
+                                        <div class="sv-scan"><i class="fa fa-barcode"/><input placeholder="Scan Barcode / QR Code" t-model="state.verifyScan"/></div>
+                                        <div class="sv-pipe">
+                                            <img src="/yms_inventory/static/src/img/pipes.svg" alt="pipe"/>
+                                            <div>
+                                                <div class="sv-pid"><strong t-esc="selectedVerify.id"/> <em class="ok">System</em></div>
+                                                <div class="kv"><span>Material</span><b t-esc="selectedVerify.material"/></div>
+                                                <div class="kv"><span>Spec</span><b t-esc="selectedVerify.spec"/></div>
+                                                <div class="kv"><span>System Qty</span><b t-esc="selectedVerify.qty"/></div>
+                                                <div class="kv"><span>System Status</span><em class="ok" t-esc="selectedVerify.verify_label"/></div>
+                                            </div>
+                                        </div>
+                                        <h4>Physical Verification</h4>
+                                        <div class="sv-phys">
+                                            <label>Physical Status
+                                                <select t-model="state.physicalStatus" t-on-change="() => this.onPhysicalStatusChange()"><option>Found</option><option>Missing</option></select>
+                                            </label>
+                                            <label>Physical Qty
+                                                <div class="step">
+                                                    <button type="button" t-on-click="() => this.state.physicalQty = Math.max(0, Number(this.state.physicalQty) - 1)">−</button>
+                                                    <input type="number" t-model="state.physicalQty"/>
+                                                    <button type="button" t-on-click="() => this.state.physicalQty = Number(this.state.physicalQty) + 1">+</button>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <label class="sv-note">Add Remark (optional)
+                                            <input t-model="state.remarks" placeholder="e.g. Good condition, match with system"/>
+                                        </label>
+                                        <div class="sv-actions">
+                                            <button type="button" class="sv-btn-p" t-att-disabled="state.verifyBusy" t-on-click="() => this.saveVerify()">Save &amp; Next</button>
+                                            <button type="button" class="sv-btn-w" t-on-click="() => this.resetVerifyEntry()">Reset</button>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="sv-sum">
+                                    <section class="sv-card">
+                                        <h3><i class="fa fa-th-list"/> Verification Summary — <t t-esc="verifyLocLabel"/></h3>
+                                        <div class="sv-kpis">
+                                            <div><i class="fa fa-cubes c1"/><div><small>Total Pipes</small><b t-esc="verifyKpi.total"/><em>Expected</em></div></div>
+                                            <div class="g"><i class="fa fa-check-circle c2"/><div><small>Verified</small><b t-esc="verifyKpi.verified"/><em><t t-esc="verifyKpi.pct"/>% completed</em></div></div>
+                                            <div class="y"><i class="fa fa-clock-o c3"/><div><small>Pending</small><b t-esc="verifyKpi.pending"/><em><t t-esc="verifyKpi.pendingPct"/>% pending</em></div></div>
+                                            <div class="r"><i class="fa fa-exclamation-triangle c4"/><div><small>Discrepancies</small><b t-esc="verifyKpi.disc"/><em><t t-esc="verifyKpi.discPct"/>% mismatch</em></div></div>
+                                        </div>
+                                    </section>
+                                    <section class="sv-card sv-prog">
+                                        <h3>Progress</h3>
+                                        <div class="bar"><span t-attf-style="width: {{ verifyKpi.pct }}%"/></div>
+                                        <div class="pct"><t t-esc="verifyKpi.pct"/>%</div>
+                                    </section>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+
+                    <t t-if="state.screen === 'picking'">
+                        <div class="pk">
+                            <link rel="stylesheet" href="/yms_inventory/static/src/scss/yms_pick_look.css?v=rev19"/>
+                            <h1>Picking / Retrieval</h1>
+                            <p class="sub">Retrieve material from yard for production or sales order and verify using scan</p>
+                            <div class="pk-kpis">
+                                <div class="pk-kpi"><div><small>Total Picking Tasks</small><b t-esc="pickKpi.total"/></div><i class="fa fa-clipboard i1"/></div>
+                                <div class="pk-kpi"><div><small>In Progress</small><b t-esc="pickKpi.progress"/></div><i class="fa fa-play-circle i2"/></div>
+                                <div class="pk-kpi done"><div><small>Completed</small><b t-esc="pickKpi.done"/></div><i class="fa fa-check-circle i3"/></div>
+                                <div class="pk-kpi pend"><div><small>Pending</small><b t-esc="pickKpi.pending"/></div><i class="fa fa-exclamation-circle i4"/></div>
+                            </div>
+                            <div class="pk-body">
+                                <section class="pk-card pk-left">
+                                    <div class="pk-cap">
+                                        <b>Picking Tasks</b>
+                                        <button type="button" class="pk-add" t-att-disabled="state.pickBusy" t-on-click="() => this.createPickTask()">+ New Picking Task</button>
+                                    </div>
+                                    <div class="pk-filters">
+                                        <select t-model="state.pickProductId" t-on-change="() => this.loadAvailability()">
+                                            <option value="">Product</option>
+                                            <t t-foreach="state.recvProducts" t-as="prod" t-key="prod.id">
+                                                <option t-att-value="prod.id" t-esc="prod.display_name"/>
+                                            </t>
+                                        </select>
+                                        <select t-model="state.pickStatusFilter">
+                                            <option value="all">All Status</option>
+                                            <option value="draft">Pending</option>
+                                            <option value="reserved">In Progress</option>
+                                            <option value="done">Completed</option>
+                                        </select>
+                                        <div class="date"><i class="fa fa-calendar"/> Availability</div>
+                                        <div class="pk-search"><i class="fa fa-search"/><input placeholder="Search by Task ID, Order No. or Pipe ID..." t-model="state.pickQuery"/></div>
+                                    </div>
+                                    <table class="pk-table">
+                                        <thead>
+                                            <tr>
+                                                <th></th><th>Task ID</th><th>Order No.</th><th>Pipe / Material</th><th>Source Location</th><th>Required Qty</th><th>Status</th><th>Priority</th><th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-if="!tasks.length">
+                                                <td colspan="9"><t t-esc="state.pickBusy ? 'Loading picking tasks…' : 'No picking tasks.'"/></td>
+                                            </tr>
+                                            <t t-foreach="tasks" t-as="task" t-key="task.id">
+                                                <tr t-attf-class="{{ state.pickId === task.id ? 'on' : '' }}" t-on-click="() => this.selectPickRow(task)">
+                                                    <td><input type="checkbox"/></td>
+                                                    <td class="id" t-esc="task.id"/>
+                                                    <td><div t-esc="task.order"/><small t-esc="task.type"/></td>
+                                                    <td><div t-esc="task.pipe"/><small t-esc="task.spec"/></td>
+                                                    <td t-esc="task.source"/>
+                                                    <td t-esc="task.qty"/>
+                                                    <td>
+                                                        <em t-attf-class="{{ task.status === 'In Progress' ? 'st-ip' : task.status === 'Completed' ? 'st-done' : 'st-pend' }}" t-esc="task.status"/>
+                                                    </td>
+                                                    <td>
+                                                        <em t-attf-class="{{ task.priority === 'High' ? 'pr-h' : task.priority === 'Low' ? 'pr-l' : 'pr-m' }}" t-esc="task.priority"/>
+                                                    </td>
+                                                    <td><button type="button" class="view">View</button></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                    <div class="pk-foot"><span>Showing 1 - <t t-esc="tasks.length"/> of <t t-esc="tasks.length"/> records</span><span class="pg">1</span></div>
+                                </section>
+                                <div class="pk-right">
+                                    <section class="pk-card">
+                                        <div class="pk-th">
+                                            <h3>Task Details</h3>
+                                            <div class="ids">
+                                                <em class="tid" t-esc="selectedTask.id"/>
+                                                <em t-attf-class="{{ selectedTask.status === 'In Progress' ? 'st-ip' : selectedTask.status === 'Completed' ? 'st-done' : 'st-pend' }}" t-esc="selectedTask.status"/>
+                                            </div>
+                                        </div>
+                                        <div class="pk-detail">
+                                            <div class="pk-rows">
+                                                <div class="pk-row"><span>Order No.</span><b t-esc="selectedTask.order"/></div>
+                                                <div class="pk-row"><span>Order Type</span><b t-esc="selectedTask.type"/></div>
+                                                <div class="pk-row"><span>Product</span><b><t t-esc="selectedTask.pipe"/> (<t t-esc="selectedTask.spec"/>)</b></div>
+                                                <div class="pk-row"><span>Required Quantity</span><b t-esc="state.availInfo.required_qty || selectedTask.qty"/></div>
+                                                <div class="pk-row"><span>Picked Quantity</span><b t-esc="selectedTask.picked"/></div>
+                                                <div class="pk-row"><span>Source Location</span><b t-esc="selectedTask.source"/></div>
+                                                <div class="pk-row"><span>Destination</span><b t-esc="selectedTask.dest"/></div>
+                                                <div class="pk-row"><span>Priority</span><em t-attf-class="{{ selectedTask.priority === 'High' ? 'pr-h' : selectedTask.priority === 'Low' ? 'pr-l' : 'pr-m' }}" t-esc="selectedTask.priority"/></div>
+                                                <div class="pk-row"><span>Assigned To</span><b t-esc="selectedTask.assignee"/></div>
+                                                <div class="pk-row"><span>Planned Date</span><b t-esc="selectedTask.date"/></div>
+                                            </div>
+                                            <div class="pk-photo">
+                                                <img src="/yms_inventory/static/src/img/pipes.svg" alt="pipe"/>
+                                                <strong t-esc="selectedTask.pipe"/>
+                                                <small t-esc="selectedTask.spec"/>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <section class="pk-card">
+                                        <div class="pk-th">
+                                            <h3><i class="fa fa-map-marker"/> Location Details</h3>
+                                            <button type="button" class="pk-map">View in Yard Map</button>
+                                        </div>
+                                        <div class="pk-loc">
+                                            <div>Yard<b t-esc="selectedTask.yard"/></div>
+                                            <div>Bin<b t-esc="selectedTask.bin"/></div>
+                                            <div>Plate<b t-esc="selectedTask.plate"/></div>
+                                        </div>
+                                    </section>
+                                    <section class="pk-card">
+                                        <div class="pk-tabs">
+                                            <button type="button" t-attf-class="{{ state.pickTab === 'scan' ? 'on' : '' }}" t-on-click="() => this.state.pickTab = 'scan'">Scan &amp; Verify</button>
+                                            <button type="button" t-attf-class="{{ state.pickTab === 'items' ? 'on' : '' }}" t-on-click="() => this.state.pickTab = 'items'">Picked Items</button>
+                                            <button type="button" t-attf-class="{{ state.pickTab === 'notes' ? 'on' : '' }}" t-on-click="() => this.state.pickTab = 'notes'">Notes</button>
+                                            <button type="button" t-attf-class="{{ state.pickTab === 'files' ? 'on' : '' }}" t-on-click="() => this.state.pickTab = 'files'">Attachments</button>
+                                        </div>
+                                        <t t-if="state.pickTab === 'scan'">
+                                            <label class="pk-scanlbl">Scan Pipe Barcode / QR / RFID</label>
+                                            <div class="pk-scan">
+                                                <div class="box"><input placeholder="Scan or enter Pipe ID" t-model="state.pickScan"/><i class="fa fa-barcode"/></div>
+                                                <button type="button" class="go" t-on-click="() => this.loadAvailability()"><i class="fa fa-camera"/> Scan</button>
+                                            </div>
+                                            <h4>Pipe Information (from Scan)</h4>
+                                            <div class="pk-info">
+                                                <div class="pk-row"><span>Pipe ID</span><b t-esc="scanPipeInfo.pipe"/></div>
+                                                <div class="pk-row"><span>Quality</span><em class="ok" t-esc="scanPipeInfo.quality"/></div>
+                                                <div class="pk-row"><span>Specification</span><b t-esc="scanPipeInfo.spec"/></div>
+                                                <div class="pk-row"><span>Available Qty</span><b><t t-esc="state.availInfo.available_qty"/> (reserved <t t-esc="state.availInfo.reserved_qty"/>, shortage <t t-esc="state.availInfo.shortage_qty"/>)</b></div>
+                                                <div class="pk-row"><span>Current Location</span><b t-esc="scanPipeInfo.source"/></div>
+                                                <div class="pk-row"><span>Yard / Bin / Plate</span><b><t t-esc="scanPipeInfo.yard"/> / <t t-esc="scanPipeInfo.bin"/> / <t t-esc="scanPipeInfo.plate"/></b></div>
+                                                <div class="pk-row"><span>Status</span><em class="ok" t-esc="scanPipeInfo.status"/></div>
+                                            </div>
+                                            <div class="pk-qty">
+                                                Enter Quantity to Pick
+                                                <div class="row">
+                                                    <div class="pk-step">
+                                                        <button type="button" t-on-click="() => this.state.pickQty = Math.max(0, Number(this.state.pickQty) - 1)">−</button>
+                                                        <input type="number" t-model="state.pickQty" t-on-change="() => this.loadAvailability()"/>
+                                                        <button type="button" t-on-click="() => this.state.pickQty = Number(this.state.pickQty) + 1">+</button>
+                                                    </div>
+                                                    <button type="button" class="pk-ok" t-att-disabled="state.pickBusy" t-on-click="() => this.confirmPick()"><i class="fa fa-check"/> Confirm Picked</button>
+                                                    <button type="button" class="pk-no" t-att-disabled="state.pickBusy" t-on-click="() => this.cancelPick()"><i class="fa fa-times"/> Cancel</button>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <t t-if="state.pickTab === 'items'"><p class="sub"><t t-esc="selectedTask.picked"/> of <t t-esc="selectedTask.qty"/> pipes picked for this task.</p></t>
+                                        <t t-if="state.pickTab === 'notes'"><p class="sub">No notes added.</p></t>
+                                        <t t-if="state.pickTab === 'files'"><p class="sub">No attachments.</p></t>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <t t-if="state.screen === 'history'">
+                        <div class="mh">
+                            <link rel="stylesheet" href="/yms_inventory/static/src/scss/yms_hist_look.css?v=rev19"/>
+                            <h1>Movement History</h1>
+                            <p class="sub">View complete movement history of pipes including location changes, transactions and scan details</p>
+                            <div class="mh-kpis">
+                                <div class="mh-kpi"><div><small>Total Movements</small><b t-esc="histKpi.total"/></div><i class="fa fa-exchange i1"/></div>
+                                <div class="mh-kpi"><div><small>Put-away</small><b t-esc="histKpi.inbound"/></div><i class="fa fa-truck i2"/></div>
+                                <div class="mh-kpi"><div><small>Internal Move</small><b t-esc="histKpi.internal"/></div><i class="fa fa-random i3"/></div>
+                                <div class="mh-kpi"><div><small>Outbound</small><b t-esc="histKpi.outbound"/></div><i class="fa fa-sign-out i4"/></div>
+                                <div class="mh-kpi"><div><small>Adjustments</small><b t-esc="histKpi.adj"/></div><i class="fa fa-cog i5"/></div>
+                            </div>
+                            <div class="mh-filters">
+                                <label class="grow">Pipe ID<input placeholder="Search Pipe ID" t-model="state.histPipe"/></label>
+                                <label>Date Range<div class="date"><i class="fa fa-calendar"/> 01 Sep 2026 - 25 Sep 2026</div></label>
+                                <label>Movement Type<select t-model="state.histType"><option value="all">All</option><option>Internal Move</option><option>Outbound</option><option>Put-away</option><option>Picking</option><option>Adjustment</option></select></label>
+                                <label>From Location<select><option>All</option></select></label>
+                                <label>To Location<select><option>All</option></select></label>
+                                <label class="grow">Document No.<input placeholder="Search..." t-model="state.histDocQ"/></label>
+                                <button type="button" class="mh-apply" t-att-disabled="state.histBusy" t-on-click="() => this.loadHistory()">Apply</button>
+                                <button type="button" class="mh-reset" t-on-click="() => this.resetHistFilters()">Reset</button>
+                            </div>
+                            <div class="mh-body">
+                                <section class="mh-card mh-left">
+                                    <div class="mh-cap">Movement Records</div>
+                                    <table class="mh-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date &amp; Time</th><th>Pipe ID</th><th>Movement Type</th><th>From Location</th><th>To Location</th><th>Document No.</th><th>User</th><th>Status</th><th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-if="!moveHistory.length">
+                                                <td colspan="9"><t t-esc="state.histBusy ? 'Loading movement history…' : 'No movement records.'"/></td>
+                                            </tr>
+                                            <t t-foreach="moveHistory" t-as="h" t-key="h.move_line_id">
+                                                <tr t-attf-class="{{ state.histDoc === h.doc ? 'on' : '' }}" t-on-click="() => this.state.histDoc = h.doc">
+                                                    <td><div t-esc="h.dt"/><small t-esc="h.time"/></td>
+                                                    <td t-esc="h.pipe"/>
+                                                    <td><em t-attf-class="t-{{ h.kind }}" t-esc="h.type"/></td>
+                                                    <td t-esc="h.from"/>
+                                                    <td t-esc="h.to"/>
+                                                    <td t-esc="h.doc"/>
+                                                    <td t-esc="h.user"/>
+                                                    <td><em class="ok" t-esc="h.status"/></td>
+                                                    <td><button type="button" class="view">View</button></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                    <div class="mh-foot">
+                                        <span>Showing 1 - <t t-esc="moveHistory.length"/> of <t t-esc="moveHistory.length"/> records</span>
+                                        <div class="mh-pg"><b>1</b></div>
+                                    </div>
+                                </section>
+                                <section class="mh-card mh-right">
+                                    <div class="mh-th">
+                                        <h3>Movement Details</h3>
+                                        <em class="ok">Completed</em>
+                                    </div>
+                                    <div class="mh-row"><span>Pipe ID</span><b t-esc="selectedHist.pipe"/></div>
+                                    <div class="mh-row"><span>Document No.</span><b t-esc="selectedHist.doc"/></div>
+                                    <div class="mh-row"><span>Movement Type</span><b t-esc="selectedHist.type"/></div>
+                                    <div class="mh-row"><span>Date &amp; Time</span><b><t t-esc="selectedHist.dt"/> <t t-esc="selectedHist.time"/></b></div>
+                                    <div class="mh-row"><span>From Location</span><b><t t-esc="selectedHist.from"/><small t-esc="selectedHist.fromLine"/></b></div>
+                                    <div class="mh-row"><span>To Location</span><b><t t-esc="selectedHist.toShow"/><small t-esc="selectedHist.toLine"/></b></div>
+                                    <div class="mh-row"><span>Quantity</span><b t-esc="selectedHist.qty"/></div>
+                                    <div class="mh-row"><span>Moved By</span><b t-esc="selectedHist.user"/></div>
+                                    <div class="mh-row"><span>Device</span><b t-esc="selectedHist.device"/></div>
+                                    <div class="mh-row"><span>Remarks</span><b t-esc="selectedHist.remarks"/></div>
+                                    <div class="mh-scan">
+                                        <h4><i class="fa fa-qrcode"/> Scan Information</h4>
+                                        <div class="mh-row"><span>Scan Source</span><b t-esc="selectedHist.scanSrc"/></div>
+                                        <div class="mh-row"><span>Scan Time</span><b t-esc="selectedHist.scanTime"/></div>
+                                        <div class="mh-row"><span>Device</span><b t-esc="selectedHist.scanDev"/></div>
+                                        <div class="mh-row"><span>Scan Status</span><em class="ok">Verified</em></div>
+                                    </div>
+                                    <button type="button" class="mh-full" t-on-click="() => this.loadHistory()">View Full History</button>
+                                </section>
+                            </div>
+                        </div>
+                    </t>
+
+                    <t t-if="state.screen === 'reports'">
+                        <div class="rp">
+                            <link rel="stylesheet" href="/yms_inventory/static/src/scss/yms_rep_look.css?v=rev19"/>
+                            <div class="rp-head">
+                                <div>
+                                    <h1>Reports &amp; Analytics</h1>
+                                    <p class="sub">Insights into yard operations and material flow</p>
+                                </div>
+                                <div class="rp-tools">
+                                    <div class="rp-chip"><i class="fa fa-calendar"/> 01 Sep 2025 - 24 Sep 2025</div>
+                                    <div class="rp-chip"><i class="fa fa-industry"/> Plant 1</div>
+                                    <button type="button" class="rp-export" t-on-click="() => this.exportReportUnavailable()"><i class="fa fa-download"/> Export Report</button>
+                                </div>
+                            </div>
+                            <div class="rp-kpis">
+                                <div class="rp-kpi"><div><small>Total Pipes in Yard</small><b t-esc="reportKpi.total"/><em class="up">Live stock.quant</em></div><i class="fa fa-cube i1"/></div>
+                                <div class="rp-kpi"><div><small>Inbound (GRN)</small><b t-esc="reportKpi.inbound"/><em class="up">Provisional / Pending</em></div><i class="fa fa-sign-in i2"/></div>
+                                <div class="rp-kpi"><div><small>Outbound (Dispatch)</small><b t-esc="reportKpi.outbound"/><em class="up">Completed retrievals</em></div><i class="fa fa-arrow-right i3"/></div>
+                                <div class="rp-kpi"><div><small>Internal Movements</small><b t-esc="reportKpi.internal"/><em class="dn">Yard + bin transfers</em></div><i class="fa fa-exchange i4"/></div>
+                            </div>
+                            <div class="rp-charts">
+                                <section class="rp-card">
+                                    <h3>Material Movement Trend
+                                        <span class="rp-leg"><span><i class="c-in"/> Inbound</span><span><i class="c-out"/> Outbound</span><span><i class="c-int"/> Internal Move</span></span>
+                                    </h3>
+                                    <svg class="rp-line" viewBox="0 0 560 220">
+                                        <line x1="48" y1="20" x2="540" y2="20" stroke="#eef0f4"/>
+                                        <line x1="48" y1="60" x2="540" y2="60" stroke="#eef0f4"/>
+                                        <line x1="48" y1="100" x2="540" y2="100" stroke="#eef0f4"/>
+                                        <line x1="48" y1="140" x2="540" y2="140" stroke="#eef0f4"/>
+                                        <line x1="48" y1="180" x2="540" y2="180" stroke="#e5e7eb"/>
+                                        <text x="8" y="24" fill="#9ca3af" font-size="10">200</text>
+                                        <text x="8" y="64" fill="#9ca3af" font-size="10">150</text>
+                                        <text x="8" y="104" fill="#9ca3af" font-size="10">100</text>
+                                        <text x="14" y="144" fill="#9ca3af" font-size="10">50</text>
+                                        <text x="20" y="184" fill="#9ca3af" font-size="10">0</text>
+                                        <polygon points="60,112 150,96 240,80 330,46 420,64 510,104 510,180 60,180" fill="#dcfce7" opacity=".55"/>
+                                        <polyline fill="none" stroke="#22c55e" stroke-width="2.5" points="60,112 150,96 240,80 330,46 420,64 510,104"/>
+                                        <polyline fill="none" stroke="#3b82f6" stroke-width="2.5" points="60,124 150,110 240,94 330,86 420,58 510,110"/>
+                                        <polyline fill="none" stroke="#8b5cf6" stroke-width="2.5" points="60,140 150,122 240,104 330,108 420,94 510,126"/>
+                                        <text x="48" y="208" fill="#9ca3af" font-size="10">1 Sep</text>
+                                        <text x="128" y="208" fill="#9ca3af" font-size="10">5 Sep</text>
+                                        <text x="218" y="208" fill="#9ca3af" font-size="10">10 Sep</text>
+                                        <text x="308" y="208" fill="#9ca3af" font-size="10">15 Sep</text>
+                                        <text x="398" y="208" fill="#9ca3af" font-size="10">20 Sep</text>
+                                        <text x="488" y="208" fill="#9ca3af" font-size="10">24 Sep</text>
+                                    </svg>
+                                </section>
+                                <section class="rp-card">
+                                    <h3>Yard Stock by Yard</h3>
+                                    <div class="rp-donut-wrap">
+                                        <div class="rp-donut"><span><t t-esc="reportKpi.total"/><small>Pipes</small></span></div>
+                                        <div class="rp-legend">
+                                            <t t-foreach="reportYardLegend" t-as="y" t-key="y.name">
+                                                <div><span><i t-attf-style="background:{{ y.color }}"/> <t t-esc="y.name"/></span><b t-esc="y.label"/></div>
+                                            </t>
+                                            <div t-if="!reportYardLegend.length"><span>No yard stock</span><b>0</b></div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section class="rp-card">
+                                    <h3>Stock by Status</h3>
+                                    <div class="rp-bars">
+                                        <t t-foreach="reportStatusBars" t-as="bar" t-key="bar.lbl">
+                                            <div>
+                                                <div class="n" t-esc="bar.n"/>
+                                                <div class="col" t-attf-style="height: {{ bar.height }};background:{{ bar.color }}"/>
+                                                <div class="lbl" t-esc="bar.lbl"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="rp-low">
+                                <section class="rp-card">
+                                    <h3><i class="fa fa-list"/> Recent Movements <button type="button" class="rp-view" t-on-click="() => this.go('history')">View All</button></h3>
+                                    <table class="rp-table">
+                                        <thead>
+                                            <tr><th>Date &amp; Time</th><th>Pipe ID</th><th>Event Type</th><th>From Location</th><th>To Location</th><th>User</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="reportMoves" t-as="r" t-key="r.move_line_id">
+                                                <tr>
+                                                    <td t-esc="r.dt"/>
+                                                    <td t-esc="r.pipe"/>
+                                                    <td><em t-attf-class="t-{{ r.kind }}" t-esc="r.type"/></td>
+                                                    <td t-esc="r.from"/>
+                                                    <td t-esc="r.to"/>
+                                                    <td t-esc="r.user"/>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </section>
+                                <section class="rp-card">
+                                    <h3><i class="fa fa-map-marker"/> Top Locations by Stock</h3>
+                                    <div class="rp-loc">
+                                        <t t-foreach="reportTopLocations" t-as="loc" t-key="loc_index">
+                                            <div><span t-esc="loc.name"/><div class="bar"><span t-attf-style="width: {{ loc.bar }}"/></div><b t-esc="loc.qty"/></div>
+                                        </t>
+                                        <div t-if="!reportTopLocations.length"><span>No plate stock</span><div class="bar"><span style="width:0%"/></div><b>0</b></div>
+                                    </div>
+                                </section>
+                            </div>
+                            <section class="rp-ins">
+                                <h3><i class="fa fa-lightbulb-o"/> Insights</h3>
+                                <ul>
+                                    <t t-foreach="reportInsights" t-as="line" t-key="line_index">
+                                        <li t-esc="line"/>
+                                    </t>
+                                </ul>
+                            </section>
+                        </div>
+                    </t>
+
+                    <t t-if="state.screen === 'config'">
+                        <h1 class="o_yms__title">Settings</h1>
+                        <p class="o_yms__sub">Configure system parameters, master data and integrations</p>
+                        <div class="o_yms__tabs">
+                            <button t-attf-class="o_yms__tab {{ state.configTab === 'general' ? 'is-on' : '' }}" t-on-click="() => this.state.configTab = 'general'">General</button>
+                            <button t-attf-class="o_yms__tab {{ state.configTab === 'structure' ? 'is-on' : '' }}" t-on-click="() => this.state.configTab = 'structure'">Yard Structure</button>
+                            <button t-attf-class="o_yms__tab {{ state.configTab === 'users' ? 'is-on' : '' }}" t-on-click="() => this.state.configTab = 'users'">Users &amp; Roles</button>
+                            <button t-attf-class="o_yms__tab {{ state.configTab === 'devices' ? 'is-on' : '' }}" t-on-click="() => this.state.configTab = 'devices'">Devices &amp; Scanners</button>
+                            <button t-attf-class="o_yms__tab {{ state.configTab === 'integrations' ? 'is-on' : '' }}" t-on-click="() => this.state.configTab = 'integrations'">Integrations</button>
+                            <button t-attf-class="o_yms__tab {{ state.configTab === 'notifications' ? 'is-on' : '' }}" t-on-click="() => this.state.configTab = 'notifications'">Notifications</button>
+                            <button t-attf-class="o_yms__tab {{ state.configTab === 'logs' ? 'is-on' : '' }}" t-on-click="() => this.state.configTab = 'logs'">System Logs</button>
+                        </div>
+                        <t t-if="state.configTab === 'general'">
+                            <div class="o_yms__split">
+                                <section class="o_yms__card">
+                                    <h3>Company / Plant Information <button class="o_yms__link" style="margin-left:auto">Edit</button></h3>
+                                    <div class="o_yms__form">
+                                        <label>Company Name *<input value="ABC Construction Pvt. Ltd."/></label>
+                                        <label>Plant / Site *<select><option>Plant 1</option></select></label>
+                                        <label>Time Zone<select><option>(GMT+05:30) Asia/Kolkata</option></select></label>
+                                        <label>Date Format<select><option>DD MMM YYYY</option></select></label>
+                                        <label>Measurement Unit<select><option>Metric (m, kg, ton)</option></select></label>
+                                        <label>Default Yard<select><option>RM Yard</option><option>FG Yard</option><option>Dispatch Yard</option></select></label>
+                                    </div>
+                                </section>
+                                <section class="o_yms__card">
+                                    <h3>System Parameters <button class="o_yms__link" style="margin-left:auto">Edit</button></h3>
+                                    <div class="o_yms__row"><span>Auto-generate Pipe ID</span><b>On</b></div>
+                                    <div class="o_yms__row"><span>Require Quality Check for GRN</span><b>On</b></div>
+                                    <div class="o_yms__row"><span>Allow Manual Stock Adjustments</span><b>On</b></div>
+                                    <div class="o_yms__row"><span>Movement Approval Required</span><b>Off</b></div>
+                                    <div class="o_yms__row"><span>Default Pipe Status</span><b>Available</b></div>
+                                    <div class="o_yms__row"><span>Retention Period for Movement History</span><b>24 Months</b></div>
+                                </section>
+                            </div>
+                        </t>
+                        <t t-if="state.configTab === 'structure'">
+                            <section class="o_yms__card" style="margin-top:12px">
+                                <h3>Yard Structure <button class="o_yms__link" style="margin-left:auto">Manage</button></h3>
+                                <table>
+                                    <thead><tr><th>Yard</th><th>Bins</th><th>Plates</th><th>Capacity</th><th>Occupied</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>RM Yard</td><td>40</td><td>120</td><td>1,200</td><td>850</td><td><span class="o_yms__badge is-ok">Active</span></td></tr>
+                                        <tr><td>Production Yard</td><td>32</td><td>96</td><td>900</td><td>620</td><td><span class="o_yms__badge is-ok">Active</span></td></tr>
+                                        <tr><td>Dispatch Yard</td><td>28</td><td>80</td><td>700</td><td>480</td><td><span class="o_yms__badge is-ok">Active</span></td></tr>
+                                        <tr><td>FG Yard</td><td>20</td><td>60</td><td>500</td><td>320</td><td><span class="o_yms__badge is-ok">Active</span></td></tr>
+                                    </tbody>
+                                </table>
+                            </section>
+                        </t>
+                        <t t-if="state.configTab === 'users'">
+                            <section class="o_yms__card" style="margin-top:12px">
+                                <h3>Users &amp; Roles <button class="o_yms__link" style="margin-left:auto">Manage</button></h3>
+                                <table>
+                                    <thead><tr><th>User Name</th><th>Role</th><th>Access Level</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>Admin User</td><td>Administrator</td><td>Full Access</td><td><span class="o_yms__badge is-ok">Active</span></td></tr>
+                                        <tr><td>Ramesh Patil</td><td>Yard Operator</td><td>Operational</td><td><span class="o_yms__badge is-ok">Active</span></td></tr>
+                                        <tr><td>Suresh Yadav</td><td>Dispatch Manager</td><td>Operational</td><td><span class="o_yms__badge is-ok">Active</span></td></tr>
+                                        <tr><td>Anita Sharma</td><td>Viewer</td><td>Read Only</td><td><span class="o_yms__badge is-ok">Active</span></td></tr>
+                                    </tbody>
+                                </table>
+                            </section>
+                        </t>
+                        <t t-if="state.configTab === 'devices'">
+                            <section class="o_yms__card" style="margin-top:12px">
+                                <h3>Devices &amp; Scanners</h3>
+                                <table>
+                                    <thead><tr><th>Device Name</th><th>Type</th><th>Location</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>Scanner-01</td><td>Barcode Scanner</td><td>Gate 1</td><td><span class="o_yms__badge is-ok">Online</span></td></tr>
+                                        <tr><td>Scanner-02</td><td>RFID Reader</td><td>RM Yard</td><td><span class="o_yms__badge is-ok">Online</span></td></tr>
+                                        <tr><td>Camera-01</td><td>AI Camera</td><td>RM Yard / BIN-01</td><td><span class="o_yms__badge is-ok">Online</span></td></tr>
+                                        <tr><td>Handheld-01</td><td>Mobile Device</td><td>FG Yard</td><td><span class="o_yms__badge is-bad">Offline</span></td></tr>
+                                    </tbody>
+                                </table>
+                            </section>
+                        </t>
+                        <t t-if="state.configTab === 'integrations'">
+                            <section class="o_yms__card" style="margin-top:12px">
+                                <h3>Integrations</h3>
+                                <div class="o_yms__row"><span>SAP · ERP</span><span class="o_yms__badge is-warn">Not Configured</span></div>
+                                <div class="o_yms__row"><span>Production System · API</span><span class="o_yms__badge is-ok">Connected</span></div>
+                                <div class="o_yms__row"><span>Weighbridge · API</span><span class="o_yms__badge is-warn">Not Configured</span></div>
+                                <div class="o_yms__row"><span>Camera AI System · API</span><span class="o_yms__badge is-ok">Connected</span></div>
+                            </section>
+                        </t>
+                        <t t-if="state.configTab === 'notifications'">
+                            <section class="o_yms__card" style="margin-top:12px">
+                                <h3>Notifications</h3>
+                                <div class="o_yms__row"><span>Material Received · Email, In-App</span><span class="o_yms__badge is-ok">Enabled</span></div>
+                                <div class="o_yms__row"><span>Stock Low · Email, In-App</span><span class="o_yms__badge is-ok">Enabled</span></div>
+                                <div class="o_yms__row"><span>Unauthorized Movement · In-App</span><span class="o_yms__badge is-ok">Enabled</span></div>
+                                <div class="o_yms__row"><span>Dispatch Completed · Email, In-App</span><span class="o_yms__badge is-ok">Enabled</span></div>
+                            </section>
+                        </t>
+                        <t t-if="state.configTab === 'logs'">
+                            <section class="o_yms__card" style="margin-top:12px">
+                                <h3>System Logs</h3>
+                                <table>
+                                    <thead><tr><th>Time</th><th>User</th><th>Event</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>25 Sep 2026 14:32</td><td>Ramesh Patil</td><td>GRN-00012 confirmed</td><td><span class="o_yms__badge is-ok">OK</span></td></tr>
+                                        <tr><td>25 Sep 2026 11:20</td><td>Anita Sharma</td><td>Location applied from Yard Management</td><td><span class="o_yms__badge is-ok">OK</span></td></tr>
+                                        <tr><td>25 Sep 2026 10:15</td><td>Priyanka K</td><td>PO import PO_Import_25Sep.xlsx</td><td><span class="o_yms__badge is-ok">OK</span></td></tr>
+                                        <tr><td>24 Sep 2026 16:40</td><td>Suresh Yadav</td><td>Outbound OUT-0005</td><td><span class="o_yms__badge is-ok">OK</span></td></tr>
+                                    </tbody>
+                                </table>
+                            </section>
+                        </t>
+                    </t>
+                </main>
+            </div>
+        </div>
+    </t>
+</templates>

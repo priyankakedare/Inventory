@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_location_form_yms" model="ir.ui.view">
+        <field name="name">stock.location.form.yms</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='additional_info']/field[@name='usage']" position="after">
+                <field name="yms_location_type"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_location_tree_yms" model="ir.ui.view">
+        <field name="name">stock.location.list.yms</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_tree2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='usage']" position="after">
+                <field name="yms_location_type" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_location_search_yms" model="ir.ui.view">
+        <field name="name">stock.location.search.yms</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='complete_name']" position="after">
+                <field name="yms_location_type"/>
+                <filter string="YMS Pending" name="yms_pending" domain="[('yms_location_type', '=', 'pending')]"/>
+                <filter string="YMS Yard" name="yms_yard" domain="[('yms_location_type', '=', 'yard')]"/>
+                <filter string="YMS Bin" name="yms_bin" domain="[('yms_location_type', '=', 'bin')]"/>
+                <filter string="YMS Plate" name="yms_plate" domain="[('yms_location_type', '=', 'plate')]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

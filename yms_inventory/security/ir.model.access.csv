@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_yms_stock_receive_user,yms.stock.receive.user,model_yms_stock_receive,stock.group_stock_user,1,1,1,1
+access_yms_stock_receive_line_user,yms.stock.receive.line.user,model_yms_stock_receive_line,stock.group_stock_user,1,1,1,1
+access_yms_stock_verification_user,yms.stock.verification.user,model_yms_stock_verification,stock.group_stock_user,1,1,1,1
+access_yms_stock_pick_user,yms.stock.pick.user,model_yms_stock_pick,stock.group_stock_user,1,1,1,1
+access_yms_inbound_po_user,yms.inbound.po.user,model_yms_inbound_po,stock.group_stock_user,1,1,1,1
+access_yms_yard_plan_user,yms.yard.plan.user,model_yms_yard_plan,stock.group_stock_user,1,1,1,1

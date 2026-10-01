@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock.menu_stock_root" model="ir.ui.menu">
+        <field name="action" eval="'ir.actions.client,' + str(ref('action_yms_inventory_app'))"/>
+    </record>
+    <record id="stock.stock_picking_type_menu" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="stock.menu_stock_warehouse_mgmt" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="stock.menu_stock_inventory_control" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="stock.menu_warehouse_report" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="stock.menu_stock_config_settings" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

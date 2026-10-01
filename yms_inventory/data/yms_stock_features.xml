@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Enable Lots & Serial Numbers and Storage Locations for Internal Users. -->
+    <record id="base.group_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('stock.group_production_lot')), (4, ref('stock.group_stock_multi_locations'))]"/>
+    </record>
+</odoo>

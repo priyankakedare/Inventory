@@ -1,0 +1,37 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'Inventory Screens',
+    'version': '18.0.1.25.5',
+    'category': 'Inventory/Inventory',
+    'summary': 'Operations screens for the Inventory app (stock). Not a separate application.',
+    'depends': ['stock', 'web'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/yms_client_actions.xml',
+        'data/yms_stock_features.xml',
+        'data/yms_stock_locations.xml',
+        'data/yms_stock_product.xml',
+        'data/yms_inbound_po.xml',
+        'views/yms_menus.xml',
+        'views/yms_stock_location_views.xml',
+        'views/yms_stock_lot_views.xml',
+        'views/yms_stock_receive_views.xml',
+    ],
+    'post_init_hook': 'post_init_hook',
+    'assets': {
+        'web.assets_backend': [
+            'yms_inventory/static/src/scss/yms.css',
+            'yms_inventory/static/src/scss/yms_sv_look.css',
+            'yms_inventory/static/src/scss/yms_pick_look.css',
+            'yms_inventory/static/src/scss/yms_hist_look.css',
+            'yms_inventory/static/src/scss/yms_rep_look.css',
+            'yms_inventory/static/src/yms_app_v2.xml',
+            'yms_inventory/static/src/mock_data.js',
+            'yms_inventory/static/src/yms_app.js',
+            'yms_inventory/static/src/yms_asset_rev.js',
+        ],
+    },
+    'installable': True,
+    'application': False,
+    'license': 'LGPL-3',
+}
